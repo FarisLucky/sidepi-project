@@ -10,7 +10,6 @@ class ProfileUser extends CI_Controller {
         parent::__construct();
         $this->rolemenu->init();
         $this->load->library('form_validation');
-        $this->load->model('Model_kelola_user',"Muser");
         //Do your magic here
     }
     

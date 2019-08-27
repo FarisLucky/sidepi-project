@@ -37,6 +37,15 @@ $this->load->view('partials/print_header');
       </tr>
       <tr>
         <td class="w-tr">
+          <small class="txt-title">Tanggal Lahir</small>
+        </td>
+        <td>
+          <small class="txt-title">: <?php $d = DateTime::createFromFormat("Y-m-d",$rs_konsumen['tgl_lahir']); echo
+          tanggal($d->format('d'),$d->format('m'),$d->format('Y')) ?></small>
+        </td>
+      </tr>
+      <tr>
+        <td class="w-tr">
           <small class="txt-title">Alamat</small>
         </td>
         <td>
@@ -53,15 +62,18 @@ $this->load->view('partials/print_header');
       </tr>
       <tr>
         <td class="w-tr">
+          <small class="txt-title">Status Nikah</small>
+        </td>
+        <td>
+          <small class="txt-title">: <?= $rs_konsumen['status_nikah']; ?></small>
+        </td>
+      </tr>
+      <tr>
+        <td class="w-tr">
           <small class="txt-title">Email</small>
         </td>
         <td>
           <small class="txt-title">: <?= $rs_konsumen['email']; ?></small>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <h4>Data Pekerjaan</h4>
         </td>
       </tr>
       <tr>
@@ -73,19 +85,53 @@ $this->load->view('partials/print_header');
         </td>
       </tr>
       <tr>
-        <td class="w-tr">
-          <small class="txt-title">Pekerjaan</small>
-        </td>
         <td>
-          <small class="txt-title">: <?= $rs_konsumen['pekerjaan']; ?></small>
+          <h4>Data Pasangan</h4>
         </td>
       </tr>
       <tr>
         <td class="w-tr">
-          <small class="txt-title">Alamat Kantor</small>
+          <small class="txt-title">Nama Pasangan</small>
         </td>
         <td>
-          <small class="txt-title">: <?= $rs_konsumen['alamat_kantor']; ?></small>
+          <small class="txt-title">: <?= $rs_konsumen['nama_pasangan']; ?></small>
+        </td>
+      </tr>
+      <tr>
+        <td class="w-tr">
+          <small class="txt-title">Hubungan dengan konsumen</small>
+        </td>
+        <td>
+          <small class="txt-title">: <?= $rs_konsumen['hubungan_pasangan']; ?></small>
+        </td>
+      </tr>
+      <tr>
+        <td class="w-tr">
+          <small class="txt-title">Alamat Pasangan</small>
+        </td>
+        <td>
+          <small class="txt-title">: <?= $rs_konsumen['alamat_pasangan']; ?></small>
+        </td>
+      </tr>
+      <tr>
+        <td class="w-tr">
+          <small class="txt-title">Telepon Pasangan</small>
+        </td>
+        <td>
+          <small class="txt-title">: <?= $rs_konsumen['telp_pasangan']; ?></small>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <h4>Data Pekerjaan Konsumen</h4>
+        </td>
+      </tr>
+      <tr>
+        <td class="w-tr">
+          <small class="txt-title">Nama Kantor</small>
+        </td>
+        <td>
+          <small class="txt-title">: <?= $rs_konsumen['nama_perusahaan']; ?></small>
         </td>
       </tr>
       <tr>
@@ -93,19 +139,140 @@ $this->load->view('partials/print_header');
           <small class="txt-title">Telepon Kantor</small>
         </td>
         <td>
-          <small class="txt-title">: <?= $rs_konsumen['telp_kantor']; ?></small>
+          <small class="txt-title">: <?= $rs_konsumen['telp_perusahaan']; ?></small>
+        </td>
+      </tr>
+      <tr>
+        <td class="w-tr">
+          <small class="txt-title">Jenis Pekerjaan</small>
+        </td>
+        <td>
+          <small class="txt-title">: <?= $rs_konsumen['jenis_pekerjaan']; ?></small>
+        </td>
+      </tr>
+      <tr>
+        <td class="w-tr">
+          <small class="txt-title">Bidang Usaha</small>
+        </td>
+        <td>
+          <small class="txt-title">: <?= $rs_konsumen['bidang_usaha']; ?></small>
+        </td>
+      </tr>
+      <tr>
+        <td class="w-tr">
+          <small class="txt-title">Jabatan Pekerjaan</small>
+        </td>
+        <td>
+          <small class="txt-title">: <?= $rs_konsumen['jabatan']; ?></small>
+        </td>
+      </tr>
+      <tr>
+        <td class="w-tr">
+          <small class="txt-title">Alamat Kantor</small>
+        </td>
+        <td>
+          <small class="txt-title">: <?= $rs_konsumen['alamat_perusahaan']; ?></small>
+        </td>
+      </tr>
+      <tr>
+        <td class="w-tr">
+          <small class="txt-title">Nama Atasan</small>
+        </td>
+        <td>
+          <small class="txt-title">: <?= $rs_konsumen['nama_atasan']; ?></small>
+        </td>
+      </tr>
+      <tr>
+        <td class="w-tr">
+          <small class="txt-title">Telepon Atasan</small>
+        </td>
+        <td>
+          <small class="txt-title">: <?= $rs_konsumen['telp_atasan']; ?></small>
+        </td>
+      </tr>
+      <tr>
+        <td class="w-tr">
+          <h4>Data Pekerjaan Pasangan</h4>
+        </td>
+      </tr>
+      <tr>
+        <td class="w-tr">
+          <small class="txt-title">Nama Kantor</small>
+        </td>
+        <td>
+          <small class="txt-title">: <?= $rs_konsumen['kantor_pasangan']; ?></small>
+        </td>
+      </tr>
+      <tr>
+        <td class="w-tr">
+          <small class="txt-title">Telepon Kantor</small>
+        </td>
+        <td>
+          <small class="txt-title">: <?= $rs_konsumen['telp_kantor_pasangan']; ?></small>
+        </td>
+      </tr>
+      <tr>
+        <td class="w-tr">
+          <small class="txt-title">Jenis Pekerjaan</small>
+        </td>
+        <td>
+          <small class="txt-title">: <?= $rs_konsumen['pekerjaan_pasangan']; ?></small>
+        </td>
+      </tr>
+      <tr>
+        <td class="w-tr">
+          <small class="txt-title">Bidang Usaha</small>
+        </td>
+        <td>
+          <small class="txt-title">: <?= $rs_konsumen['bidang_usaha_p']; ?></small>
+        </td>
+      </tr>
+      <tr>
+        <td class="w-tr">
+          <small class="txt-title">Jabatan Pekerjaan</small>
+        </td>
+        <td>
+          <small class="txt-title">: <?= $rs_konsumen['jabatan_pasangan']; ?></small>
+        </td>
+      </tr>
+      <tr>
+        <td class="w-tr">
+          <small class="txt-title">Alamat Kantor</small>
+        </td>
+        <td>
+          <small class="txt-title">: <?= $rs_konsumen['alamat_kantor_pasangan']; ?></small>
+        </td>
+      </tr>
+      <tr>
+        <td class="w-tr">
+          <small class="txt-title">Nama Atasan</small>
+        </td>
+        <td>
+          <small class="txt-title">: <?= $rs_konsumen['nama_atasan_p']; ?></small>
+        </td>
+      </tr>
+      <tr>
+        <td class="w-tr">
+          <small class="txt-title">Telepon Atasan</small>
+        </td>
+        <td>
+          <small class="txt-title">: <?= $rs_konsumen['telp_atasan_p']; ?></small>
         </td>
       </tr>
       <tr>
         <td>
+          <small class="txt-title">Photo</small>
+          <?php if (!empty($rs_konsumen['foto_ktp'])) { ?>
+          <img src="<?= FCPATH.'assets/uploads/images/konsumen/'.$rs_konsumen['foto_ktp'] ?>" max-width="150px"
+            style="margin-top: 50px;border:1px solid black;" alt="">
+          <?php } else { ?>
           <div style="width: 130px;height: 130px;border:1px solid black;text-align: center;margin-top: 50px;">
-            FOtO</div>
+            photo</div>
+          <?php } ?>
         </td>
       </tr>
     </tbody>
   </table>
-  <div class="row p-3">
-  </div>
 </div>
 
 <?php

@@ -8,7 +8,6 @@ class Properti extends CI_Controller {
     {
         parent::__construct();
         $this->rolemenu->init();
-        $this->load->model('Model_properti');
         $this->load->library('form_validation');
     }
     
@@ -33,25 +32,15 @@ class Properti extends CI_Controller {
             $properti = $this->modelapp->getData('*','rab_properti',['id_properti'=>$value->id_properti,'type'=>'p']);
             $unit = $this->modelapp->getData('*','rab_properti',['id_properti'=>$value->id_properti,'type'=>'u']);
             if ($value->status != 'publish') {
-                $this->status = '<a href="'.base_url().'properti/detailproperti/'.$value->id_properti.'" class="btn btn-sm btn-primary mr-1" id="detail_data_properti">Detail</a><button type="button" class="btn btn-sm btn-danger mr-1" onclick="deleteItem('."'properti/hapus/$value->id_properti'".')">Hapus</button><button type="button" class="btn btn-sm btn-warning" onclick="setItem('."'properti/publish/$value->id_properti','publish'".')">Publish</button>';
+                $this->status = '<a href="'.base_url().'properti/detailproperti/'.$value->id_properti.'" class="btn btn-icons btn-inverse-info mr-1" id="detail_data_properti"><i class="fa fa-info"></i></a><button type="button" class="btn btn-icons btn-inverse-danger mr-1" onclick="deleteItem('."'properti/hapus/$value->id_properti'".')"><i class="fa fa-trash"></i></button><button type="button" class="btn btn-sm btn-warning" onclick="setItem('."'properti/publish/$value->id_properti','publish'".')">Publish</button>';
             }else{
-                $this->status = '<a href="'.base_url().'properti/detailproperti/'.$value->id_properti.'" class="btn btn-sm btn-primary mr-1" id="detail_data_properti">Detail</a>';
-                if ($properti->num_rows() < 1) {
-                    $this->status .= '<button type="button" class="btn btn-sm btn-info mr-1" data-id="'.$value->id_properti.'" onclick="rabProperti('."this,'p'".')">Tambah RAB Properti</button>';
-                }else{
-                    $this->status .= '<a href="'.base_url()."rab/properti/".$value->id_properti.'" class="btn btn-sm btn-info mr-1" id="rab_data_properti">RAB Properti</a>';
-                }
-                if($unit->num_rows() < 1){
-                    $this->status .= '<button type="button" class="btn btn-sm btn-success mr-1" data-id="'.$value->id_properti.'" onclick="rabProperti('."this,'u'".')">Tambah RAB Unit</button>';
-                }
-                else{
-                    $this->status .= ' <a href="'.base_url()."rab/unit/".$value->id_properti.'" class="btn btn-sm btn-success mr-1" id="rab_data_unit">RAB Unit</button>';
-                }
+                $this->status = '<a href="'.base_url().'properti/detailproperti/'.$value->id_properti.'" class="btn btn-icons btn-inverse-info mr-1" id="detail_data_properti"><i class="fa fa-info"></i></a><a href="'.base_url()."rab/properti/".$value->id_properti.'" class="btn btn-sm btn-info mr-1" id="rab_data_properti">RAB Properti</a><a href="'.base_url()."rab/unit/".$value->id_properti.'" class="btn btn-sm btn-success mr-1" id="rab_data_unit">RAB Unit</button>';
             }
             $sub = array();
             $sub[] = $value->nama_properti;
             $sub[] = $value->luas_tanah;
-            $sub[] = $value->rekening;
+            $sub[] = $value->no_rekening;
+            $sub[] = $value->bank;
             $sub[] = '<img id="foto_properti" width="70px" src="'.base_url().'assets/uploads/images/properti/'.$value->foto_properti.'" class="" alt="">';
             $sub[] = $this->status;
             $data[] = $sub;
@@ -80,7 +69,7 @@ class Properti extends CI_Controller {
         $data['menus'] = $this->rolemenu->getMenus();
         $data['title'] = 'Tambah';
         $data['img'] = getCompanyLogo();
-        $data["rekening"] = $this->modelapp->getData("*","rekening_properti")->result();
+        $data["rekening"] = $this->modelapp->getData('*','rekening_properti',['status'=>'1'])->result();
         $this->page('properti/view_tambah_properti',$data);
     }
 
@@ -105,7 +94,22 @@ class Properti extends CI_Controller {
                     $input += ["foto_properti"=>$foto];
                     $query = $this->modelapp->updateData($input,"properti",["id_properti"=>$id]);
                     if ($query) {
-                        $this->session->set_flashdata("success","Berhasil diubah");
+                        if ($input['status'] == 'publish') {
+                            $input_rab = $this->data_rab();
+                            $input_rab += ['id_properti'=>$id,'type'=>'p'];
+                            $query_rab = $this->modelapp->insertData($input_rab,"rab_properti"); //Insert Rab Perumahan
+                            if ($query_rab) {
+                                $input_rab['type'] = 'u';
+                                $this->modelapp->insertData($input_rab,"rab_properti"); //Insert Rab Unit Perumahan
+                                $this->session->set_flashdata("success","Berhasil ditambahkan"); 
+                                redirect("properti/detailproperti/".$id);
+                            }
+                        } else {   
+                            $this->session->set_flashdata("success","Berhasil ditambahkan");
+                            redirect("properti/detailproperti/".$id);
+                        }
+                    }  else {
+                        $this->session->set_flashdata("failed","Tidak ada perubahan");
                         redirect("properti/detailproperti/".$id);
                     }
                 }
@@ -117,7 +121,22 @@ class Properti extends CI_Controller {
             }else{
                 $query = $this->modelApp->updateData($input,"properti",["id_properti"=>$id]);
                 if ($query) {
-                    $this->session->set_flashdata("success","Berhasil diubah");
+                    if ($input['status'] == 'publish') {
+                        $input_rab = $this->data_rab();
+                        $input_rab += ['id_properti'=>$id,'type'=>'p'];
+                        $query_rab = $this->modelapp->insertData($input_rab,"rab_properti"); //Insert Rab Perumahan
+                        if ($query_rab) {
+                            $input_rab['type'] = 'u';
+                            $this->modelapp->insertData($input_rab,"rab_properti"); //Insert Rab Unit Perumahan
+                            $this->session->set_flashdata("success","Berhasil ditambahkan"); 
+                            redirect("properti/detailproperti/".$id);
+                        }
+                    } else {   
+                        $this->session->set_flashdata("success","Berhasil ditambahkan");
+                        redirect("properti/detailproperti/".$id);
+                    }
+                } else {
+                    $this->session->set_flashdata("failed","Tidak ada perubahan");
                     redirect("properti/detailproperti/".$id);
                 }
             }   
@@ -141,8 +160,20 @@ class Properti extends CI_Controller {
                     $input += ["foto_properti"=>$foto];
                     $db = $this->modelapp->insertData($input,"properti");
                     if ($db) {
-                        $this->session->set_flashdata("success","Berhasil ditambahkan");
-                        redirect("properti");
+                        if ($input['status'] == 'publish') {
+                            $input_rab = $this->data_rab();
+                            $input_rab += ['id_properti'=>$this->db->insert_id(),'type'=>'p'];
+                            $query = $this->modelapp->insertData($input_rab,"rab_properti"); //Insert Rab Perumahan
+                            if ($query) {
+                                $input_rab['type'] = 'u';
+                                $this->modelapp->insertData($input_rab,"rab_properti"); //Insert Rab Unit Perumahan
+                                $this->session->set_flashdata("success","Berhasil ditambahkan"); 
+                                redirect("properti");
+                            }
+                        } else {   
+                            $this->session->set_flashdata("success","Berhasil ditambahkan");
+                            redirect("properti");
+                        }
                     }
                 }else{
                     $error = $this->upload->display_errors();
@@ -188,35 +219,30 @@ class Properti extends CI_Controller {
         $input = $this->security->xss_clean($id);
         $get_data = $this->modelapp->getData("*","properti",["id_properti"=>$input]);
         if ($get_data->num_rows() > 0) {
+            $rs_data = $get_data->row_array();
             $query = $this->modelapp->updateData(["status"=>"publish"],"properti",["id_properti"=>$input]);
             if ($query) {
-                $this->session->set_flashdata("success","Berhasil dipublish");
-                redirect("properti");
+                $input_rab = [
+                    'nama_rab'=>$rs_data['nama_properti'],
+                    'tgl_buat'=>date("Y-m-d"),
+                    'total_anggaran'=>0,
+                    'id_user'=>$_SESSION['id_user']
+                ];
+                $input_rab += ['id_properti'=>$input,'type'=>'p'];
+                $query = $this->modelapp->insertData($input_rab,"rab_properti"); //Insert Rab Perumahan
+                if ($query) {
+                    $input_rab['type'] = 'u';
+                    $this->modelapp->insertData($input_rab,"rab_properti"); //Insert Rab Unit Perumahan
+                    $this->session->set_flashdata("success","Berhasil ditambahkan"); 
+                    redirect("properti");
+                } else {   
+                    $this->session->set_flashdata("success","Berhasil ditambahkan");
+                    redirect("properti");
+                }
             }
         }else{
             $this->session->set_flashdata("failed","properti tidak ditemukan");
             redirect("properti");
-        }
-    }
-    public function rab()
-    {
-        date_default_timezone_set('Asia/Jakarta');
-        $id = $this->input->post('properti',true);
-        $unit = $this->input->post('id_unit');
-        if (!empty($id)) {
-            $input = [
-                'nama_rab'=>$this->input->post('txt_nama',true),
-                'type'=>$this->input->post("rab",true),
-                'tgl_buat'=>date("Y-m-d"),
-                'total_anggaran'=>0,
-                'id_user'=>$this->session->userdata('id_user'),
-                'id_properti'=>$id
-            ];
-            $query = $this->modelapp->insertData($input,"rab_properti");
-            if ($query) {
-                $this->session->set_flashdata("success","Berhasil ditambahkan");
-                redirect("properti");
-            }
         }
     }
 
@@ -245,6 +271,16 @@ class Properti extends CI_Controller {
             'tgl_buat'=>date('Y-m-d')
         ];
         return $data;
+    }
+    private function data_rab()
+    {
+        $input = [
+            'nama_rab'=>$this->input->post('txt_nama',true),
+            'tgl_buat'=>date("Y-m-d"),
+            'total_anggaran'=>0,
+            'id_user'=>$_SESSION['id_user']
+        ];
+        return $input;
     }
     private function reArrayFoto(&$files) {
         $uploads = array();

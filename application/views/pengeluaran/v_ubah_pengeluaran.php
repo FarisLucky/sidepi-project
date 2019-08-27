@@ -57,17 +57,17 @@
                   </div>
                   <div class="form-group">
                     <label for="txt_file">Pilih Unit</label>
-                    <select name="kelompok" class="form-control">
+                    <select name="kelompok" class="form-control select-opt">
                       <option value="">-- Pilih Kelompok --</option>
                       <?php foreach ($unit as $u) { ?>
                       <option value=<?= '"'.$u->id_unit.'"'; echo ($u->id_unit == $p->id_unit) ? 'selected' : ''; ?>>
-                        <?= $value->nama_unit ?></option>
+                        <?= $u->nama_unit ?></option>
                       <?php } ?>
                     </select>
                   </div>
                   <div class="form-group">
                     <label for="txt_file">Pilih Kelompok</label>
-                    <select name="kelompok" class="form-control">
+                    <select name="kelompok" class="form-control select-opt">
                       <option value="">-- Pilih Kelompok --</option>
                       <?php foreach ($kelompok as $key => $value) { ?>
                       <option

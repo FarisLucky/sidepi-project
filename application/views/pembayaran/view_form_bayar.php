@@ -67,9 +67,9 @@
                     <select name="txt_rekening" class="form-control">
                       <option value="">-- Pilih Rekening --</option>
                       <?php foreach ($rekening as $key => $value) : ?>
-                      <option value="<?= $value["id_rekening"] ?>"
-                        <?= $value['id_rekening'] == set_value('txt_rekening') ? 'selected' : ''; ?>>
-                        <?= $value["bank"]." ".$value["no_rekening"]." ".$value["pemilik"] ?></option>
+                      <option value="<?= $value["rekening"] ?>"
+                        <?= $value['rekening'] == set_value('txt_rekening') ? 'selected' : ''; ?>>
+                        <?= $value["bank"]." ".$value["no_rekening"] ?></option>
                       <?php endforeach; ?>
                     </select>
                     <small class="text-danger"><?= form_error("txt_rekening") ?></small>

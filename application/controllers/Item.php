@@ -7,7 +7,6 @@ class Item extends CI_Controller
 		parent::__construct();	
 		$this->rolemenu->init();
 		$this->load->library('form_validation');
-		$this->load->model('M_pengeluaran',"M_kategori_item");
 	}
 	public function index()
 	{

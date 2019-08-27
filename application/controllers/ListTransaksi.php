@@ -9,7 +9,6 @@ class ListTransaksi extends CI_Controller {
     {
         parent::__construct();
         $this->rolemenu->init();
-        $this->load->model('Model_laporan','Mlaporan');
     }
     public function index()
     {
@@ -17,8 +16,7 @@ class ListTransaksi extends CI_Controller {
         $data['menus'] = $this->rolemenu->getMenus();
         $data['img'] = getCompanyLogo();
         $data["properti"] = $this->modelapp->getData("*","properti")->result();
-        $data["semua"] = $this->modelapp->getData("COUNT(id_transaksi) as total","transaksi",['status_transaksi'=>'s'])->row_array();
-        $data["sementara"] = $this->modelapp->getData("COUNT(id_transaksi) as sementara","transaksi")->row_array();
+        $data["sementara"] = $this->modelapp->getData("COUNT(id_transaksi) as sementara","transaksi",['status_transaksi'=>'s'])->row_array();
         $data["progress"] = $this->modelapp->getData("COUNT(id_transaksi) as progress","transaksi",['status_transaksi'=>'p'])->row_array();
         $data["selesai"] = $this->modelapp->getData("COUNT(id_transaksi) as selesai","transaksi",['status_transaksi'=>'sl'])->row_array();
         $this->pages("laporan/transaksi/view_transaksi_unit",$data);
@@ -56,12 +54,17 @@ class ListTransaksi extends CI_Controller {
         $fetch_values = $this->ssd->makeDataTables($column,$tbl,$search,$order,null,$where);
         $data = array();
         foreach ($fetch_values as $value) {
+            if (file_exists('assets/uploads/files/spk/'.$value->sp3k)) {
+                $btn = '<a href="'.base_url('listtransaksi/printspk/'.$value->id_transaksi).'" class="btn btn-sm btn-inverse-success mr-2" target="blank"><i class="fa fa-print"></i> SP3K</a>';
+            } else {
+                $btn = '';
+            }
             if ($value->kunci == "l") {
                 $kunci="terkunci";
-                $btn = '<button type="button" class="btn btn-icons btn-inverse-danger" onclick="setItem(\''.base_url('listtransaksi/unlock/'.$value->id_transaksi).'\',\'Buka\')"><i class="fa fa-unlock"></i></button>';
+                $btn .= '<button type="button" class="btn btn-icons btn-inverse-danger" onclick="setItem(\''.base_url('listtransaksi/unlock/'.$value->id_transaksi).'\',\'Buka\')"><i class="fa fa-unlock"></i></button>';
             } else {
                 $kunci="terbuka";
-                $btn ="";
+                $btn .="";
             }
             $status = $value->status_transaksi == 'p' ? 'progress' : ($value->status_transaksi == 's' ? 'sementara' : 'selesai'); 
             $sub = array();
@@ -71,7 +74,7 @@ class ListTransaksi extends CI_Controller {
             $sub[] = $value->tgl_transaksi;
             $sub[] = '<div class="badge badge-info">'.$status.'</badge>';
             $sub[] = '<div class="badge badge-dark">'.$kunci.'</badge>';
-            $sub[] = '<a href="'.base_url('listtransaksi/getdetail/'.$value->id_transaksi).'" class="btn btn-icons btn-inverse-success" data-id="'.$value->id_transaksi.'"><i class="fa fa-info"></i></a><a href="'.base_url('listtransaksi/printspr/'.$value->id_transaksi).'" class="btn btn-inverse-warning mx-2"><i class="fa fa-print"></i> SPR</a>'.$btn;
+            $sub[] = '<a href="'.base_url('listtransaksi/getdetail/'.$value->id_transaksi).'" class="btn btn-icons btn-inverse-info" data-id="'.$value->id_transaksi.'"><i class="fa fa-info"></i></a><a href="'.base_url('listtransaksi/printspr/'.$value->id_transaksi).'" class="btn btn-inverse-warning mx-2"><i class="fa fa-print"></i> SPR</a>'.$btn;
             $data[] = $sub;
         }
         $output = array(
@@ -147,6 +150,23 @@ class ListTransaksi extends CI_Controller {
             // $this->load->view('print/print_spr',$data);
             $this->pdf->load_view('Surat SPR','print/print_spr',$data);
         }
+    }
+
+    public function printSpk($id)
+    {
+        $data_transaksi = $this->modelapp->getData('sp3k,no_spr,nama_lengkap','tbl_transaksi',['id_transaksi'=>$id])->row_array();
+        $data['link'] = base_url('assets/uploads/files/spk/'.$data_transaksi['sp3k']);
+        $data['name'] = 'SP3k '.$data_transaksi['nama_lengkap'].' Transaksi ('.$data_transaksi['no_spr'].').pdf';
+        $this->load->view('print/custom_print', $data);
+    }
+
+    public function getJumlah()
+    {
+        $id = $this->input->post('id',true);
+        $data["s"] = $this->modelapp->getData("COUNT(id_transaksi) as s","tbl_transaksi",['status_transaksi'=>'s','id_properti'=>$id])->row_array();
+        $data["p"] = $this->modelapp->getData("COUNT(id_transaksi) as p","tbl_transaksi",['status_transaksi'=>'p','id_properti'=>$id])->row_array();
+        $data["sl"] = $this->modelapp->getData("COUNT(id_transaksi) as sl","tbl_transaksi",['status_transaksi'=>'sl','id_properti'=>$id])->row_array();
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
     // This function is private. so , anyone cannot to access this function from web based
     private function pages($core_page,$data){

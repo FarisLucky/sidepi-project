@@ -7,13 +7,12 @@ class Pengeluaran extends CI_Controller
 		parent::__construct();
 		$this->rolemenu->init();
 		$this->load->library('form_validation');
-		$this->load->model('M_pengeluaran');
 		$this->load->helper('date');
 	}
 	public function index()
 	{
 		$data["title"] = "Pengeluaran";
-		$data['pengeluaran'] = $this->modelapp->getData("*","tbl_pengeluaran",["id_properti"=>$_SESSION["id_properti"]])->result();
+		$data['pengeluaran'] = $this->modelapp->getData("*","tbl_pengeluaran",["id_properti"=>$_SESSION["id_properti"]],'id_pengeluaran','DESC ')->result();
 		$data['menus'] = $this->rolemenu->getMenus();
 		$data['img'] = getCompanyLogo();
 		$this->pages('pengeluaran/v_pengeluaran',$data);
@@ -93,12 +92,11 @@ class Pengeluaran extends CI_Controller
 	public function ubah($id)
 	{
 		$data['title'] = "Ubah";
-		$active = "pengeluaran";
-		$data['menus'] = $this->rolemenu->getMenus($active);
+		$data['menus'] = $this->rolemenu->getMenus();
 		$where = array('id_pengeluaran' => $id);
 		$data['img'] = getCompanyLogo();
 		$data['kelompok'] = $this->modelapp->getData('id_kelompok,nama_kelompok','kelompok_item',['id_kategori'=>3,"status"=>"a"])->result();
-		$data['unit'] = $this->modelapp->getData('id_unit,nama_unit','unit',['id_kategori'=>3,"status"=>"a"])->result();
+		$data['unit'] = $this->modelapp->getData('id_unit,nama_unit','unit')->result();
 		$data['p'] = $this->modelapp->getData('*','pengeluaran',$where)->row();
 		$this->pages('pengeluaran/v_ubah_pengeluaran',$data);
 	}
@@ -145,6 +143,31 @@ class Pengeluaran extends CI_Controller
 					redirect('pemasukan/ubah/'.$id);
 				}
 			}
+		}
+	}
+
+	public function lock($id)
+	{
+		$input = $id;
+		$get_data = $this->modelapp->getData('id_pengeluaran,status_manager','pengeluaran',['id_pengeluaran'=>$input]);
+		if ($get_data->num_rows() > 0) {
+			$rs_pengeluaran = $get_data->row_array();
+			if ($rs_pengeluaran['status_manager'] == 'sl') {
+				$query_update = $this->modelapp->updateData(['status_owner'=>'p'],'pengeluaran',['id_pengeluaran'=>$rs_pengeluaran['id_pengeluaran']]);
+				if ($query_update) {
+					$this->session->set_flashdata('success','Berhasil disimpan');
+					redirect('pengeluaran');
+				}
+			} else {
+				$query_update = $this->modelapp->updateData(['status_owner'=>'p','status_manager'=>'p'],'pengeluaran',['id_pengeluaran'=>$rs_pengeluaran['id_pengeluaran']]);
+				if ($query_update) {
+					$this->session->set_flashdata('success','Berhasil disimpan');
+					redirect('pengeluaran');
+				}
+			}
+		} else {
+			$this->session->set_flashdata('success','Berhasil disimpan');
+			redirect('pengeluaran');
 		}
 	}
 

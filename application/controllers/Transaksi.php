@@ -9,7 +9,6 @@ class Transaksi extends CI_Controller {
         parent::__construct();
         $this->rolemenu->init();
         $this->load->library("form_validation");
-        $this->load->model('Model_transaksi',"Mtransaksi");
     }
     
     public function coba()
@@ -325,19 +324,28 @@ class Transaksi extends CI_Controller {
         $get_data = $this->modelapp->getData("id_transaksi,id_konsumen,id_unit,status_transaksi","transaksi",["id_transaksi"=>$id]);
         if ($get_data->num_rows() > 0) {
             $result = $get_data->row_array();
-            $status_konsumen = $this->modelapp->getData('status_konsumen','konsumen',['id_konsumen'=>$result['id_konsumen']])->row_array();
-            $status_unit = $this->modelapp->getData('status_unit','unit',['id_unit'=>$result['id_unit']])->row_array();
-            if ($status_konsumen['status_konsumen'] == 'ck' && $status_unit['status_unit'] == 'bt') {
-                if ($result["status_transaksi"] == "s") {
-                    $this->modelapp->updateData(['status_konsumen'=>'k'],'konsumen',['id_konsumen'=>$result['id_konsumen']]);
-                    $this->modelapp->updateData(['status_unit'=>'b'],'unit',['id_unit'=>$result['id_unit']]);
-                    $query = $this->modelapp->updateData(['status_transaksi'=>'p','kunci'=>'l'],'transaksi',['id_transaksi'=>$result['id_transaksi']]);       
+            if ($result['status_transaksi'] == 'p') {
+                $query = $this->modelapp->updateData(['kunci'=>'l'],'transaksi',['id_transaksi'=>$result['id_transaksi']]); 
+                if ($query) {
                     $this->session->set_flashdata("success","Berhasil dilock");
                     redirect("transaksi");
                 }
             } else {
-                $this->session->set_flashdata('failed','Calon atau Unit sudah tidak tersedia');
-                redirect("transaksi");
+                $status_konsumen = $this->modelapp->getData('status_konsumen','konsumen',['id_konsumen'=>$result['id_konsumen']])->row_array();
+                $status_unit = $this->modelapp->getData('status_unit','unit',['id_unit'=>$result['id_unit']])->row_array();
+                if ($status_konsumen['status_konsumen'] == 'ck' && $status_unit['status_unit'] == 'bt') {
+                    if ($result["status_transaksi"] == "s") {
+                        $this->modelapp->updateData(['status_konsumen'=>'k'],'konsumen',['id_konsumen'=>$result['id_konsumen']]);
+                        $this->modelapp->updateData(['status_unit'=>'b'],'unit',['id_unit'=>$result['id_unit']]);
+                        $query = $this->modelapp->updateData(['status_transaksi'=>'p','kunci'=>'l'],'transaksi',['id_transaksi'=>$result['id_transaksi']]);       
+                        $this->session->set_flashdata("success","Berhasil dilock");
+                        redirect("transaksi");
+                    }
+                } else {
+                    $this->session->set_flashdata('failed','Calon atau Unit sudah tidak tersedia');
+                    redirect("transaksi");
+                }
+               
             }
         } else {
             $this->session->set_flashdata("failed","Data tidak ditemukan");

@@ -8,12 +8,13 @@
           <div class="row">
             <div class="col-sm-12">
               <h4 class="dark txt_title d-inline-block mt-2">Laporan Unit</h4>
-              <a data-toggle="collapse" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne"
-                class="float-right"><span class="fa fa-circle text-dark"></span></a>
+              <a data-toggle="collapse" href="#collapseOne" class="text-primary float-right"><span
+                  class="fa fa-circle"></span></a>
             </div>
           </div>
           <hr>
-          <div class="collapse" id="collapseOne">
+          <div class="collapse show" id="collapseOne">
+            <?php if ($_SESSION['id_akses'] != '1') { ?>
             <div class="row">
               <div class="col-sm-12 text-center">
                 <img src="<?= base_url('assets/uploads/images/properti/'.$site_plan["foto_properti"]) ?>"
@@ -43,45 +44,49 @@
             </div>
             <!-- Site Plan Unit -->
             <hr>
-            <div class="row">
-              <?php if ($_SESSION['id_akses'] == "1") { ?>
-              <div class="col-md-4">
-                <div class="form-group">
-                  <label for="properti_id">Pilih Properti</label>
-                  <select name="properti" id="id_properti" class="form-control text-center"
-                    onchange="changeElement(this,'post','<?= base_url('laporanunit/getunit/') ?>','<?= $this->security->get_csrf_hash() ?>','#id_unit')">
-                    <option value=""> -- Properti -- </option>
-                    <?php foreach ($properti as $key => $value) { ?>
-                    <option value="<?= $value->id_properti ?>"><?= $value->nama_properti ?></option>
-                    <?php } ?>
-                  </select>
+            <?php } ?>
+            <?php if ($_SESSION['id_akses'] == "1") { ?>
+            <div class="filter border-left-color py-3">
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label for="properti_id">Pilih Properti</label>
+                    <select name="properti" id="id_properti" class="form-control text-center"
+                      onchange="changeElement(this,'post','<?= base_url('laporanunit/getunit/') ?>','<?= $this->security->get_csrf_hash() ?>','#id_unit')">
+                      <option value=""> -- Properti -- </option>
+                      <?php foreach ($properti as $key => $value) { ?>
+                      <option value="<?= $value->id_properti ?>"><?= $value->nama_properti ?></option>
+                      <?php } ?>
+                    </select>
+                  </div>
                 </div>
-              </div>
-              <?php } ?>
-              <div class="col-md-4">
-                <div class="form-group">
-                  <label for="unit_id">Pilih Unit</label>
-                  <select name="id_unit" id="id_unit" class="form-control text-center">
-                    <option value=""> -- Unit -- </option>
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label for="unit_id">Pilih Unit</label>
+                    <select name="id_unit" id="id_unit" class="form-control text-center">
+                      <option value=""> -- Unit -- </option>
 
-                    <?php if ($_SESSION['id_akses'] != '1' && $_SESSION['id_properti']) { 
+                      <?php if ($_SESSION['id_akses'] != '1' && $_SESSION['id_properti']) { 
                     foreach ($unit as $key => $value) { ?>
-                    <option value="<?= $value['id_unit'] ?>"><?= $value['nama_unit'] ?></option>
-                    <?php } } ?>
+                      <option value="<?= $value['id_unit'] ?>"><?= $value['nama_unit'] ?></option>
+                      <?php } } ?>
 
-                  </select>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-6">
+                  <button
+                    onclick="searchData(['id_properti','id_unit'],'<?= $this->security->get_csrf_hash() ?>','#tbl_laporan_unit','<?= base_url('laporanunit/dataproses') ?>'),updateData('id_properti')"
+                    class="btn btn-primary mr-2">
+                    <i class="fa fa-search"></i>Search</button>
+                  <a href="<?= base_url('laporanunit/printunit') ?>" class="btn btn-warning"><i class="fa fa-print"></i>
+                    Print</a>
                 </div>
               </div>
             </div>
-            <div class="row">
-              <div class="col-sm-6">
-                <button
-                  onclick="searchData(['id_properti','id_unit'],'<?= $this->security->get_csrf_hash() ?>','#tbl_laporan_unit','<?= base_url('laporanunit/dataproses') ?>')"
-                  class="btn btn-primary mr-2" id="btn_search">
-                  <i class="fa fa-search"></i>Search</button>
-                <button type="submit" class="btn btn-warning"><i class="fa fa-print"></i> Print</button>
-              </div>
-            </div>
+            <?php } ?>
           </div>
         </div>
       </div>
@@ -92,27 +97,49 @@
       <div class="card-body">
         <div class="row">
           <div class="col-sm-12">
-            <a href="<?= base_url('laporanunit/getJumlah') ?>" id="lihat">Lihat Unit</a>
-            <a href="#collapseTwo" class="float-right" data-toggle="collapse" aria-expanded="true"
-              aria-controls="collapseTwo"><i class="fa fa-circle text-dark"></i></a>
+            <a href="#collapseTwo" class="text-primary float-right" data-toggle="collapse"><i
+                class="fa fa-circle"></i></a>
           </div>
         </div>
         <hr>
-        <div class="row collapse show" id="collapseTwo">
-          <div class="col-sm-12">
-            <table id="tbl_laporan_unit" class="table table-bordered table-striped table-hover">
-              <thead>
-                <th>Nama Unit</th>
-                <th>Properti</th>
-                <th>Type</th>
-                <th>Tanah</th>
-                <th>Bangunan</th>
-                <th>Harga</th>
-                <th>Status</th>
-                <th>Foto</th>
-                <th>Aksi</th>
-              </thead>
-            </table>
+        <div class="collapse show" id="collapseTwo">
+          <div class="row">
+            <div class="col-sm-12">
+              <table id="tbl_laporan_unit" class="table table-bordered table-striped table-hover">
+                <thead>
+                  <th>Nama Unit</th>
+                  <th>Properti</th>
+                  <th>Type</th>
+                  <th>Tanah</th>
+                  <th>Bangunan</th>
+                  <th>Harga</th>
+                  <th>Status</th>
+                  <th>Foto</th>
+                  <th>Aksi</th>
+                </thead>
+              </table>
+            </div>
+          </div>
+          <hr>
+          <div class="text-jual text-right border-right-color py-2">
+            <div class="row">
+              <div class="col-sm-12">
+                <small class="txt-normal">Jumlah Unit</small>
+                <small class="txt-normal-b" id="ttl">:&emsp;<?= $total['total'] ?></small>
+              </div>
+              <div class="col-sm-12">
+                <small class="txt-normal ">Belum Terjual</small>
+                <small class="txt-normal-b" id="bt">:&emsp;<?= $bt['bt'] ?></small>
+              </div>
+              <div class="col-sm-12">
+                <small class="txt-normal ">Booking</small>
+                <small class="txt-normal-b" id="b">:&emsp;<?= $b['b'] ?></small>
+              </div>
+              <div class="col-sm-12">
+                <small class="txt-normal ">Terjual</small>
+                <small class="txt-normal-b" id="t">:&emsp;<?= $t['t'] ?></small>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -120,24 +147,3 @@
   </div>
 </div>
 <!-- End Page -->
-<div class="modal fade" id="modal_unit" tabindex="-1" role="dialog">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Jumlah Unit</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="alert alert-info">
-          <h5 class="jumlah">Jumlah Unit</h5>
-          <small class="bt">Belum Terjual</small><br>
-          <small class="b">Booking</small><br>
-          <small class="t">Terjual</small>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- End Modal -->

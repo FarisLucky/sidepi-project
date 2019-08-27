@@ -9,7 +9,6 @@ class Pembayaran extends CI_Controller {
         parent::__construct();
         $this->rolemenu->init();
         $this->load->library("form_validation");
-        $this->load->model('Model_pembayaran',"Mpembayaran");
     }
     public function index()
     {
@@ -46,7 +45,7 @@ class Pembayaran extends CI_Controller {
         $data['img'] = getCompanyLogo();
         $data["bayar"] = $this->modelapp->getData("*","pembayaran",["id_pembayaran"=>$id])->row_array();
         $data['id'] = $id;
-        $data["rekening"] = $this->modelapp->getData("*","rekening_properti")->result_array();
+        $data["rekening"] = $this->modelapp->getData("rekening,no_rekening,bank","tbl_properti",['id_properti'=>$_SESSION['id_properti']])->result_array();
         $this->pages("pembayaran/view_form_bayar",$data);
     }
     public function ubahBayar($id)
@@ -278,7 +277,7 @@ class Pembayaran extends CI_Controller {
         $data['img'] = getCompanyLogo();
         $data["id"] = $id;
         $data["error"] = $image;
-        $data["image"] = $this->modelapp->getData("sp3k","transaksi",["id_transaksi"=>$id])->row();
+        $data["trans"] = $this->modelapp->getData("id_transaksi,sp3k","transaksi",["id_transaksi"=>$id])->row_array();
         $this->pages("pembayaran/view_surat_kpr",$data);
     }
     public function coreSuratKpr()
@@ -287,19 +286,19 @@ class Pembayaran extends CI_Controller {
         $get_data = $this->modelapp->getData('id_transaksi,sp3k','transaksi',['id_transaksi'=>$id]);
         if ($get_data->num_rows() > 0) {
             $rs_kpr = $get_data->row_array();
-            $config = $this->imageInit('./assets/uploads/images/kpr/');
+            $config = $this->imageInit('./assets/uploads/files/spk/');
             $this->load->library('upload', $config);
             if ($this->upload->do_upload('upload')) {
-                $img = $this->upload->data();
-                $this->Mpembayaran->updateData(["sp3k"=>$img["file_name"]],"transaksi",["id_transaksi"=>$rs_kpr['id_transaksi']]);
-                redirect('pembayaran/suratkpr/'.$rs_kpr['id_transaksi']);
+                $file = $this->upload->data();
+                $this->modelapp->updateData(["sp3k"=>$file["file_name"]],"transaksi",["id_transaksi"=>$rs_kpr['id_transaksi']]);
+                redirect('pembayaran/cicilan/');
             } else {
-                $image = $this->upload->display_errors();
-                $this->suratKpr($id,$image);
+                $files = $this->upload->display_errors();
+                $this->suratKpr($id,$files);
             }
         } else {
             $this->session->set_flashdata('failed','Data tidak ditemukan');
-            redirect('pembayaran/suratkpr/'.$id);
+            redirect('pembayaran/cicilan/');
         }
         // return $this->output->set_content_type('application/json')->set_output(json_encode($image));
     }
@@ -308,7 +307,7 @@ class Pembayaran extends CI_Controller {
         $this->load->library('Pdf');
         $this->load->helper('date');
         $data['img'] = getCompanyLogo();
-        $where = ["id_detail" => $id_pembayaran];
+        $where = ["id_detail" => $id_detail];
         $data['detail_bayar'] = $this->modelapp->getData("*", "tbl_detail_pembayaran", $where)->row_array();
         $data['bayar'] = $this->modelapp->getData("hutang,total_bayar,total_tagihan", "tbl_pembayaran", ['id_pembayaran'=>$data['detail_bayar']['id_pembayaran']])->row_array();
         // $this->load->view('print/print_tandajadi', $data);
@@ -319,11 +318,18 @@ class Pembayaran extends CI_Controller {
         $this->load->library('Pdf');
         $this->load->helper('date');
         $data['img'] = getCompanyLogo();
-        $where = ["id_pembayaran" => $id_pembayaran];
+        $where = ['id_pembayaran' => $id_pembayaran,'status_owner'=>'sl','status_manager'=>'sl'];
         $data['detail'] = $this->modelapp->getData("*", "tbl_detail_pembayaran", $where)->result_array();
         $data['bayar'] = $this->modelapp->getData("hutang,total_bayar,total_tagihan", "tbl_pembayaran", ['id_pembayaran'=>$id_pembayaran])->row_array();
         // $this->load->view('print/print_tandajadi', $data);
         $this->pdf->load_view('Kwitansi', 'print/print_all_bayar', $data);
+    }
+    public function printSpk($id)
+    {
+        $data_transaksi = $this->modelapp->getData('sp3k,no_spr,nama_lengkap','tbl_transaksi',['id_transaksi'=>$id])->row_array();
+        $data['link'] = base_url('assets/uploads/files/spk/'.$data_transaksi['sp3k']);
+        $data['name'] = 'SP3k '.$data_transaksi['no_spr'].' '.$data_transaksi['nama_lengkap'].'.pdf';
+        $this->load->view('print/custom_print', $data);
     }
     // This function is private. so , anyone cannot to access this function from web based *Private*
     private function pages($core_page,$data){
@@ -349,11 +355,9 @@ class Pembayaran extends CI_Controller {
     }
     private function imageInit($path){
         $config['upload_path'] = $path;
-        $config['allowed_types'] = 'gif|jpg|png';
+        $config['allowed_types'] = 'pdf';
         $config['encrypt_name'] = true;
         $config['max_size']  = '1024';
-        $config['max_width']  = '1024';
-        $config['max_height']  = '768';
         return $config;
     }
 }

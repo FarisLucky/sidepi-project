@@ -8,8 +8,7 @@ class KartuKontrol extends CI_Controller {
     public function __construct()
     {
         parent::__construct();
-        $this->rolemenu->init();
-        $this->load->model('Model_laporan',"Mlaporan");   
+        $this->rolemenu->init();  
     }
     
     public function index()

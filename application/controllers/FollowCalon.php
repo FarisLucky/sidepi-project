@@ -6,7 +6,6 @@ class FollowCalon extends CI_Controller
     function __construct()
     {
         parent::__construct();
-        $this->load->model('M_follow_calon_konsumen');
         $this->load->library('form_validation');
         $this->rolemenu->init();
     }

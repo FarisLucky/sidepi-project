@@ -11,7 +11,6 @@ class LaporanKonsumen extends CI_Controller {
         parent::__construct();
         $this->rolemenu->init();
         $this->load->library('form_validation');
-        $this->load->model('Model_laporan');
     }
 
     public function index()
@@ -41,7 +40,7 @@ class LaporanKonsumen extends CI_Controller {
             $sub[] = $value->telp;
             $sub[] = $value->email;
             $sub[] = $value->alamat;
-            $sub[] = '<a href="'.base_url('laporankonsumen/detail/'.$value->id_konsumen).'" class="btn btn-sm btn-info btn-details"><i class="fa fa-info"></i>Detail</a><a href="'.base_url()."laporankonsumen/printkonsumen/".$value->id_konsumen.'" class="btn btn-sm btn-warning mx-2"><i class="fa fa-print"></i>Print</a>';
+            $sub[] = '<a href="'.base_url('laporankonsumen/detail/'.$value->id_konsumen).'" class="btn btn-icons btn-inverse-info"><i class="fa fa-info"></i></a><a href="'.base_url()."laporankonsumen/printkonsumen/".$value->id_konsumen.'" class="btn btn-icons btn-inverse-warning mx-2"><i class="fa fa-print"></i></a>';
             $data[] = $sub;
         }
         $output = array(
@@ -54,18 +53,20 @@ class LaporanKonsumen extends CI_Controller {
     }
     public function detail($id)
     {
+        $this->load->helper('date');
         $data['title'] = 'Detail Konsumen';
         $data['img'] = getCompanyLogo();
         $data['menus'] = $this->rolemenu->getMenus();
-        $data['konsumen'] = $this->modelapp->getData("*",'konsumen',['id_konsumen' => $id])->row_array();
-        $data['sasaran'] = $this->modelapp->getData('*','kelompok_persyaratan')->result_array();
-        $data['follow'] = $this->modelapp->getData('*','follow_up',['id_konsumen' => $id])->result_array();
+        $data['doc_konsumen'] = $this->modelapp->getJoinData("*","persyaratan_konsumen",['kelompok_persyaratan'=>'kelompok_persyaratan.id_sasaran = persyaratan_konsumen.kelompok_persyaratan'],['id_konsumen'=>$id])->result_array();
+        $data['konsumen'] = $this->modelapp->getData("*","konsumen",['id_konsumen'=>$id])->row_array();
+        $data['trans'] = $this->modelapp->getData("*","tbl_transaksi",['id_konsumen'=>$id,'status_transaksi !='=>'s'])->row_array();
         $this->page("laporan/view_detail",$data);
     }
 
     public function printKonsumen($id)
     {
         $this->load->library('Pdf');
+        $this->load->helper('date');
         $input = $id;
         $get_data = $this->modelapp->getData('*','konsumen',['id_konsumen'=>$input]);
         if ($get_data->num_rows() > 0) {
@@ -76,6 +77,14 @@ class LaporanKonsumen extends CI_Controller {
         } else {
             $this->session->set_flashdata('failed','Data tidak ditemukan');
         }
+    }
+
+    public function printDoc($id)
+    {
+        $data_konsumen = $this->modelapp->getData('kelompok_persyaratan,file','persyaratan_konsumen',['id_persyaratan'=>$id])->row_array();
+        $data['link'] = base_url('assets/uploads/files/konsumen/'.$data_konsumen['file']);
+        $data['name'] = $data_konsumen['kelompok_persyaratan'].'.pdf'; 
+        $this->load->view('print/custom_print', $data);
     }
     
     // Private function 

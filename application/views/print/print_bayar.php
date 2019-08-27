@@ -1,6 +1,4 @@
-<?php $this->load->view('partials/print_header');
-// var_dump($detail_bayar);
-?>
+<?php $this->load->view('partials/print_header'); ?>
 <section class="bayar">
   <h4 class="text-center">Pembayaran</h4>
   <div style="font-size: 15px; margin: 10px 0px;display:block;">Tagihan :
@@ -26,7 +24,7 @@
         <tr>
           <td><?= $detail_bayar['nama_pembayaran'] ?></td>
           <td>
-            <?php $date = DateTime::createFromFormat("Y-m-d H:i:s",$detail_bayar['tgl_bayar']); echo tanggal($date->format("d"),$date->format("m"),$date->format("Y"))." {$date->format('H')}:{$date->format('s')}:{$date->format('s')}" ?>
+            <?php $date = DateTime::createFromFormat("Y-m-d H:i:s",$detail_bayar['tgl_bayar']); echo tanggal($date->format("d"),$date->format("m"),$date->format("Y")).' '.$date->format('H:i:s') ?>
           </td>
           <td><?= $detail_bayar['nama_lengkap'] ?></td>
           <td><?= number_format($detail_bayar['jumlah_bayar'],2,',','.'); ?></td>

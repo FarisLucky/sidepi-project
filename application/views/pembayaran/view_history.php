@@ -62,8 +62,7 @@
 
                           $button = "<i>Menunggu Approve</i>";
                       } else {
-                        
-                          $button = '<a href="'.base_url('pembayaran/printdata/'.$value['id_pembayaran']).'" class="btn btn-icons btn-inverse-warning mr-1" ><i class="fa fa-print"></i></a>';
+                          $button = '<a href="'.base_url('pembayaran/printdata/'.$value['id_detail']).'" class="btn btn-icons btn-inverse-warning mr-1" ><i class="fa fa-print"></i></a>';
                       }?>
 
                       <tr>

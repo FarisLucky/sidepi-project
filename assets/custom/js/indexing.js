@@ -385,22 +385,6 @@ $(function () {
     });
   });
   // end Js Pembayaran
-
-  $("#laporan_view_unit #lihat").click(function (e) {
-    e.preventDefault();
-    let id = $(this).attr('data-id');
-    let href = $(this).attr('href');
-    ajaxReq("POST", href, {
-      id_tkn: csrf_value,
-      id
-    }, function (param) {
-      $("#modal_unit .jumlah").text("Jumlah Unit : " + param.total.total);
-      $("#modal_unit .bt").text("Belum Terjual : " + param.bt.bt);
-      $("#modal_unit .b").text("Booking : " + param.b.b);
-      $("#modal_unit .t").text("Terjual : " + param.t.t);
-      $("#modal_unit").modal("show");
-    })
-  });
   $('#upload_file').click(function (e) {
     e.preventDefault();
     let id = $(this).attr('data-id');
@@ -420,6 +404,30 @@ $(function () {
     let html = '<div class="form-group"><label>Upload File</label><input type="file" class="form-control" name="file_upload"></div><div class="form-group"><button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-save"></i> Simpan</button></div>';
     $("#form_change").html(html);
     $("#modal_doc").modal("show");
+  });
+
+  $('.next').click(function () {
+    $('.nav-tabs .nav-item .active').parent().next().find('a').click();
+  });
+  $('.prev').click(function () {
+    $('.nav-tabs .nav-item .active').parent().prev().find('a').trigger('click');
+  });
+  
+  $('#batal').click(function (e) { 
+    e.preventDefault();
+    Swal({
+      title: "Tanyakan",
+      text: "apakah ingin membatalkan Pengeluaran ?",
+      type: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#00ce68",
+      cancelButtonColor: "#e65251",
+      confirmButtonText: "Oke"
+    }).then(result => {
+      if (result.value) {
+        window.location = url;
+      }
+    });
   });
 });
 
@@ -497,6 +505,22 @@ function deleteItem(url) {
 }
 
 function setItem(url, confirm) {
+  Swal({
+    title: "Tanyakan",
+    text: confirm + " data ?",
+    type: "question",
+    showCancelButton: true,
+    confirmButtonColor: "#00ce68",
+    cancelButtonColor: "#e65251",
+    confirmButtonText: confirm
+  }).then(result => {
+    if (result.value) {
+      window.location = url;
+    }
+  });
+}
+function submitForm(url,confirm) {
+  event.preventDefault();
   Swal({
     title: "Tanyakan",
     text: confirm + " data ?",
@@ -734,4 +758,40 @@ function nextTab(elem) {
 
 function nextTab(elem) {
   $(elem).prev().find('a[data-toggle="tab"]').click();
+}
+
+function updateData(params) {
+  event.preventDefault();
+  let id = document.getElementById(params).value;
+  if (id != '') {
+    $.ajax({
+      type: "POST",
+      url: base+"laporanunit/getjumlah/",
+      data: {id,id_tkn: csrf_val},
+      dataType: "JSON",
+      success: function (response) {
+        $('#ttl').html(response.ttl.total);
+        $('#bt').html(response.bt.bt);
+        $('#b').html(response.b.b);
+        $('#t').html(response.t.t);
+      }
+    });
+  }
+}
+function updateTransaksi(params) {
+  event.preventDefault();
+  let id = document.getElementById(params).value;
+  if (id != '') {
+    $.ajax({
+      type: "POST",
+      url: base+"listtransaksi/getjumlah/",
+      data: {id,id_tkn: csrf_val},
+      dataType: "JSON",
+      success: function (response) {
+        $('#s').html(response.s.s);
+        $('#p').html(response.p.p);
+        $('#sl').html(response.sl.sl);
+      }
+    });
+  }
 }

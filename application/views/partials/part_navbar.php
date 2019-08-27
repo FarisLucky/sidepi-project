@@ -35,6 +35,8 @@
   <link rel="shortcut icon" href="<?= base_url() ?>assets/images/favicon.png" />
   <script>
   var base = '<?= base_url() ?>'
+  var csrf_name = '<?= $this->security->get_csrf_token_name() ?>'
+  var csrf_val = '<?= $this->security->get_csrf_hash() ?>'
   </script>
 </head>
 
@@ -52,29 +54,14 @@
     <!-- Part Navbar -->
     <nav class="navbar default-layout col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
       <div class="text-center navbar-brand-wrapper d-flex align-items-top justify-content-center">
-        <a class="navbar-brand brand-logo" href="index.html">
-          <img src="<?= base_url() ?>assets/images/logo.svg" alt="logo" />
+        <a class="navbar-brand brand-logo" href="<?= base_url() ?>">
+          <img src="<?= base_url('assets/uploads/app/logo.png') ?>" alt="logo" />
         </a>
-        <a class="navbar-brand brand-logo-mini" href="index.html">
-          <img src="<?= base_url() ?>assets/images/logo-mini.svg" alt="logo" />
+        <a class="navbar-brand brand-logo-mini" href="<?= base_url() ?>">
+          <img src="<?= base_url('assets/uploads/app/logo-mini.png') ?>" alt="logo" />
         </a>
       </div>
       <div class="navbar-menu-wrapper d-flex align-items-center">
-        <ul class="navbar-nav navbar-nav-left header-links d-none d-md-flex">
-          <li class="nav-item">
-            <a href="#" class="nav-link">Schedule
-              <span class="badge badge-primary ml-1">New</span>
-            </a>
-          </li>
-          <li class="nav-item active">
-            <a href="#" class="nav-link">
-              <i class="mdi mdi-elevation-rise"></i>Reports</a>
-          </li>
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="mdi mdi-bookmark-plus-outline"></i>Score</a>
-          </li>
-        </ul>
         <ul class="navbar-nav navbar-nav-right">
           <li class="nav-item dropdown">
             <a class="nav-link count-indicator dropdown-toggle" id="messageDropdown" href="#" data-toggle="dropdown"

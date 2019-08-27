@@ -9,7 +9,6 @@ class LaporanPengeluaran extends CI_Controller
     {
         parent::__construct();
         $this->rolemenu->init();
-        $this->load->model('Model_laporan','Mlaporan');
     }
     public function index()
     {
@@ -38,9 +37,11 @@ class LaporanPengeluaran extends CI_Controller
             $sub[] = $value->volume." ".$value->satuan;
             $sub[] = number_format($value->harga_satuan,2,",",".");
             $sub[] = number_format($value->total_harga,2,",",".");
+            $sub[] = $value->status_owner == 'sl' ? 'selesai' : ($value->status_owner == 'p' ? 'pending' : '-');
+            $sub[] = $value->status_manager == 'sl' ? 'selesai' : ($value->status_manager == 'p' ? 'pending' : '-');
             $sub[] = $value->nama_lengkap;
             $sub[] = $value->tgl_buat;
-            $sub[] = '<a href="'.base_url('laporanpengeluaran/print/'.$value->id_pengeluaran).'" class="btn btn-sm btn-info mx-2">Print</a>';
+            $sub[] = '<a href="'.base_url('laporanpengeluaran/printpengeluaran/'.$value->id_pengeluaran).'" class="btn btn-icons btn-inverse-warning mx-2"><i class="fa fa-print"></i></a>';
             $data[] = $sub;
             $no++;
         }
@@ -63,7 +64,7 @@ class LaporanPengeluaran extends CI_Controller
         // $this->load->view("print/print_pengeluaran",$where);
         $this->pdf->load_view('Semua Pengeluaran','print/print_all_pengeluaran',$data);
     }
-    public function print($id_pengeluaran)
+    public function printPengeluaran($id_pengeluaran)
     {
         $this->load->library('Pdf');
         $this->load->helper('date');
@@ -104,6 +105,7 @@ class LaporanPengeluaran extends CI_Controller
         if ($session != 1) {
             $where += ["id_properti"=>$this->session->userdata('id_properti')];
         }
+        $where += ['status_owner'=>'sl','status_manager'=>'sl'];
         return $where;
     }
 }

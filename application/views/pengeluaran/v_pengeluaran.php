@@ -31,7 +31,7 @@
             <div class="row">
               <div class="col-sm-12">
                 <div class="table-responsive">
-                  <table class="table table-hover" id="tbl_pengeluaran">
+                  <table class="table table-hover" id="tbl_to_tables">
                     <thead>
                       <th>No</th>
                       <th>Nama Pengeluaran</th>
@@ -75,7 +75,9 @@
                             class="btn btn-icons btn-inverse-primary"><i class="fa fa-edit"></i></a>
                           <button onclick="deleteItem('<?= base_url('pengeluaran/hapus/'.$p->id_pengeluaran) ?>')"
                             class="btn btn-icons btn-inverse-danger"><i class="fa fa-trash"></i></button>
-                          <button class="btn btn-icons btn-inverse-warning"><i class="fa fa-lock"></i></button>
+                          <button class="btn btn-icons btn-inverse-warning"
+                            onclick="setItem('<?= base_url('pengeluaran/lock/'.$p->id_pengeluaran) ?>','lock')"><i
+                              class="fa fa-lock"></i></button>
                           <?php } elseif ($p->status_owner == 'sl' && $p->status_manager == 'sl') { ?>
 
                           <i>-</i>

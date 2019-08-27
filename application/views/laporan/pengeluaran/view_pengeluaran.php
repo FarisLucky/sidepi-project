@@ -18,7 +18,7 @@
             <div class="col-md-6 col-sm-12">
               <div class="form-group">
                 <label for="unit_id">Pilih Kelompok</label>
-                <select name="id_kelompok" id="id_kelompok" class="form-control text-center">
+                <select name="id_kelompok" id="id_kelompok" class="form-control select-opt">
                   <option value=""> -- Kelompok -- </option>
                   <?php foreach ($kelompok as $key => $value) { ?>
                   <option value="<?= $value->id_kelompok ?>"><?= $value->nama_kelompok ?></option>
@@ -61,7 +61,7 @@
         <div class="row">
           <div class="col-sm-12">
             <div class="table-responsive">
-              <table class="table table-bordered table-hover" id="tbl_to_tables">
+              <table class="table table-bordered table-hover" id="tbl_laporan_pengeluaran">
                 <thead>
                   <tr>
                     <th>No</th>
@@ -70,6 +70,8 @@
                     <th>Jumlah</th>
                     <th>Harga</th>
                     <th>Total Harga</th>
+                    <th>Status Owner</th>
+                    <th>Status Manager</th>
                     <th>Pembuat</th>
                     <th>Tanggal Buat</th>
                     <th>Aksi</th>

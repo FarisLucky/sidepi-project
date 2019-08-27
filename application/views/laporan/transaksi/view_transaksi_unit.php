@@ -12,10 +12,20 @@
         </div>
       </div>
     </div>
-    <div class="row mt-3">
-      <div class="col-sm-12">
-        <div class="card">
-          <div class="card-body">
+    <br>
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-sm-12">
+            <small class="txt-semi-high font-weight-medium">Filter</small>
+            <a href="" class="text-primary float-right" data-target="#filter" data-toggle="collapse"><i
+                class="fa fa-circle"></i></a>
+          </div>
+        </div>
+        <hr>
+        <div class="collapse" id="filter">
+          <div class="border-left-color">
+
             <div class="row">
               <div class="col-md-6">
                 <div class="form-group">
@@ -53,58 +63,60 @@
             <div class="row">
               <div class="col-md-12">
                 <button type="submit" class="btn btn-primary float-right" id="search_kontrol"
-                  onclick="searchData(['id_properti','id_unit','tgl_mulai','tgl_akhir'],'<?= $this->security->get_csrf_hash() ?>','#tbl_list','<?= base_url('listtransaksi/dataproses') ?>')"><i
+                  onclick="searchData(['id_properti','id_unit','tgl_mulai','tgl_akhir'],'<?= $this->security->get_csrf_hash() ?>','#tbl_list','<?= base_url('listtransaksi/dataproses') ?>'),updateTransaksi('id_properti')"><i
                     class="fa fa-search"></i> Cari</button>
-              </div>
-            </div>
-            <hr>
-            <div class="row">
-              <div class="col-md-12">
-                <div class="alert alert-success">
-                  <small class="txt-semi-high">Total Transaksi = <small
-                      class="txt-semi-high"><?= $semua['total'] ?></small></small><br>
-                  <small class="txt-normal">Sementara = <?= $sementara['sementara'] ?></small>
-                  <small class="txt-normal">Progress = <?= $progress['progress'] ?></small>
-                  <small class="txt-normal">Selesai = <?= $selesai['selesai'] ?></small>
-                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="row mt-3">
-      <div class="col-sm-12">
-        <div class="card">
-          <div class="card-body">
-            <div class="row">
-              <div class="col-sm-12">
-                <h5 class="d-inline">List Semua Transaksi Unit</h5>
-                <?php if ($_SESSION['id_akses'] == 1) { ?>
-                <a href="<?= base_url('listunlocktransaksi') ?>" class="btn btn-warning float-right"><i
-                    class="fa fa-unlock"></i> Transaksi terbuka</a>
-                <?php } ?>
-              </div>
+    <br>
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-sm-12">
+            <h5 class="d-inline">List Semua Transaksi Unit</h5>
+            <?php if ($_SESSION['id_akses'] == 1) { ?>
+            <a href="<?= base_url('listunlocktransaksi') ?>" class="btn btn-icons btn-inverse-warning float-right"><i
+                class="fa fa-unlock"></i></a>
+            <?php } ?>
+          </div>
+        </div>
+        <br>
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="table-responsive">
+              <table class="table table-hover table-bordered" id="tbl_list">
+                <thead class="thead-light">
+                  <tr>
+                    <th>No SPR</th>
+                    <th>Konsumen</th>
+                    <th>Unit</th>
+                    <th>Tanggal Transaksi</th>
+                    <th>Status Transaksi</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+              </table>
             </div>
-            <br>
-            <div class="row">
-              <div class="col-sm-12">
-                <div class="table-responsive">
-                  <table class="table table-hover table-bordered" id="tbl_list">
-                    <thead class="thead-light">
-                      <tr>
-                        <th>No SPR</th>
-                        <th>Konsumen</th>
-                        <th>Unit</th>
-                        <th>Tanggal Transaksi</th>
-                        <th>Status Transaksi</th>
-                        <th>Status</th>
-                        <th>Aksi</th>
-                      </tr>
-                    </thead>
-                  </table>
-                </div>
-              </div>
+          </div>
+        </div>
+        <hr>
+        <div class="border-right-color">
+          <div class="row text-right">
+            <div class="col-md-12">
+              <small class="txt-normal">Sementara</small>
+              <small class="txt-normal-b" id="s">: &emsp;<?= $sementara['sementara'] ?></small>
+            </div>
+            <div class="col-md-12">
+              <small class="txt-normal">Progress</small>
+              <small class="txt-normal-b" id="p">: &emsp;<?= $progress['progress'] ?></small>
+            </div>
+            <div class="col-md-12">
+              <small class="txt-normal">Selesai</small>
+              <small class="txt-normal-b" id="sl">: &emsp;<?= $selesai['selesai'] ?></small>
             </div>
           </div>
         </div>

@@ -179,7 +179,8 @@
                   </td>
                   <td class="text-center">
                     <?php if (file_exists($path) && !is_dir($path)) { ?>
-                    <a href="#" class="btn btn-icons btn-inverse-warning"><i class="fa fa-print"></i></a>
+                    <a href="<?= base_url('persyaratanunit/printdoc/'.$value['id_persyaratan']) ?>"
+                      class="btn btn-icons btn-inverse-warning" target="blank"><i class="fa fa-print"></i></a>
                     <button class="btn btn-icons btn-inverse-danger"
                       onclick="deleteItem('<?= base_url('persyaratanunit/hapusfile/'.$value['id_persyaratan'].'/'.$unit->id_unit) ?>')"><i
                         class="fa fa-remove"></i></button>

@@ -9,7 +9,6 @@ class Approve extends CI_Controller {
     {
         parent::__construct();
         $this->rolemenu->init();
-        $this->load->model('Model_approve','MApprove');
     }
     public function index()
     {

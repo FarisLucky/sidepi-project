@@ -74,7 +74,7 @@ class KelolaUser extends CI_Controller
         $data = array();
         foreach ($fetch_values as $value) {
             if ($value->akses != 'owner') {
-                $this->status = '<a href="' . base_url() . 'kelolauser/detailuser/' . $value->id_user . '" class="btn btn-sm btn-primary mx-2" id="detail_data_user">Detail</a><button type="button" class="btn btn-sm btn-danger" onclick="deleteItem('."'kelolauser/hapus/$value->id_user'".')">Hapus</button>';
+                $this->status = '<a href="' . base_url() . 'kelolauser/detailuser/' . $value->id_user . '" class="btn btn-icons btn-inverse-info mx-2" id="detail_data_user"><i class="fa fa-info"></i></a><button type="button" class="btn btn-icons btn-inverse-danger" onclick="deleteItem('."'kelolauser/hapus/$value->id_user'".')"><i class="fa fa-trash"></i></button>';
                 if ($value->status_user == 'aktif') {
                     $this->status .= '<button type="button" class="btn btn-sm btn-warning mx-2" onclick="setItem('."'kelolauser/aktifnonaktif/$value->id_user','Aktifkan'".')">Nonaktif</button>';
                 } else {
@@ -193,9 +193,7 @@ class KelolaUser extends CI_Controller
     private function validate()
     {
         $this->form_validation->set_rules('txt_nama','Nama','trim|required|max_length[25]|min_length[3]');
-        $this->form_validation->set_rules('txt_alamat','Alamat','trim|required');
         $this->form_validation->set_rules('txt_akses','Hak Akses','trim|required');
-        $this->form_validation->set_rules('txt_email','Email','trim|required|valid_email|is_unique[user.Email]|max_length[25]');
         $this->form_validation->set_rules('txt_telp','Telp','trim|required|max_length[13]|min_length[10]|greater_than[0]|is_unique[user.no_hp]');
         $this->form_validation->set_rules('txt_username','Username','trim|required|is_unique[user.username]');
         $this->form_validation->set_rules('txt_status','Status','trim|required');
@@ -208,9 +206,7 @@ class KelolaUser extends CI_Controller
     {
         $input = [
             'nama_lengkap' => $this->input->post('txt_nama', true),
-            'alamat' => $this->input->post('txt_alamat', true),
             'id_akses' => $this->input->post('txt_akses', true),
-            'email' => $this->input->post('txt_email', true),
             'no_hp' => $this->input->post('txt_telp', true),
             'jenis_kelamin' => $this->input->post('radio_jk', true),
             'username' => $this->input->post('txt_username', true),

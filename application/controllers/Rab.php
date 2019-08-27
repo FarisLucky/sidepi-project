@@ -7,15 +7,19 @@ class Rab extends CI_Controller
 	{
 		parent::__construct();
 		$this->rolemenu->init();
-		$this->load->library('form_validation');	
-		$this->load->model("Model_rab",'M_kelola_rab');
+		$this->load->library('form_validation');
 	}
 	public function index()
 	{
 		redirect('dashboard');
 	}
-	public function properti($id)
+	public function properti()
 	{
+		if ($_SESSION['id_user'] == 1) {
+			$id = $this->uri->segment(3);
+		} else {
+			$id = $_SESSION['id_properti'];
+		}
 		$data['title']= "RAB Properti";
 		$data['rab_properti'] = $this->modelapp->getData("*","rab_properti",["id_properti"=>$id,"type"=>"p"])->row_array();
 		$rab = $data["rab_properti"]["id_rab"];
@@ -23,13 +27,18 @@ class Rab extends CI_Controller
 		$data['menus'] = $this->rolemenu->getMenus();
 		$this->pages('kelola_rab/v_kelola_rab',$data);
 	}
-	public function unit($id)
+	public function unit()
 	{
+		if ($_SESSION['id_user'] == 1) {
+			$id = $this->uri->segment(3);
+		} else {
+			$id = $_SESSION['id_properti'];
+		}
 		$data['title']= "Kelola RAB Unit";
 		$data['rab_unit'] = $this->modelapp->getData("*","rab_properti",["id_properti"=>$id,"type"=>"u"])->row();
 		$rab = $data["rab_unit"]->id_rab;
 		$data['kelola_rab'] = $this->modelapp->getData("*","tbl_detail_rab",["id_rab"=>$rab])->result();
-        $data['menus'] = $this->rolemenu->getMenus();
+		$data['menus'] = $this->rolemenu->getMenus();
 		$this->pages('kelola_rab/view_rab_unit',$data);
 	}
 	public function tambah($id)
@@ -216,30 +225,45 @@ class Rab extends CI_Controller
 	}
 	public function ubahRab()
 	{
-		$data = ["success"=>false];
-		$this->form_validation->set_rules('nama_rab', 'Nama', 'trim|required|min_length[3]|max_length[25]');
-		$this->form_validation->set_rules('tanah_efektif', 'Tanah Efektif', 'trim|required|min_length[3]|max_length[25]');
-		$this->form_validation->set_rules('sarana', 'Sarana Prasarana', 'trim|required|min_length[3]|max_length[25]');
-		if ($this->form_validation->run() == FALSE) {
-			foreach ($_POST as $key => $value) {
-                $data['msg'][$key] = form_error($key);
-            }
-		} else {
-			$id = $this->input->post('input_hidden',true);
-			$input = [
-				"nama_rab"=>$this->input->post('nama_rab',true),
-				"tanah_effective"=>$this->input->post('tanah_efektif',true),
-				"sarana"=>$this->input->post('sarana',true)
-			];
-			$query = $this->M_kelola_rab->update_data("rab_properti",$input,["id_rab"=>$id]);
-			if ($query) {
-				$data["success"] = true;
-			}
-			else{
-				$data["error"] = $query;
+		$id = $this->input->post('input_hidden',true);
+		$properti = $this->input->post('input_hidden2',true);
+		$this->form_validation->set_rules('nama_rab', 'Nama', 'trim|required|min_length[3]|max_length[18]');
+		if (isset($_POST['properti'])) {
+			if ($this->form_validation->run() == FALSE) {
+				$this->session->set_flashdata('error',form_error());
+				redirect('rab/properti/'.$properti);
+			} else {
+				$input = [
+					"nama_rab"=>$this->input->post('nama_rab',true)
+				];
+				$query = $this->modelapp->updateData($input,'rab_properti',['id_rab'=>$id]);
+				if ($query) {
+					$this->session->set_flashdata('success',"Data berhasil ditambahkan");
+					redirect('rab/properti/'.$properti);
+				} else {
+					$this->session->set_flashdata('failed',"Tidak ada perubahan");
+					redirect('rab/properti/'.$properti);
+				}
 			}
 		}
-		return $this->output->set_content_type('application/json')->set_output(json_encode($data));
+		if (isset($_POST['properti'])) {
+			if ($this->form_validation->run() == FALSE) {
+				$this->session->set_flashdata('error',form_error());
+				redirect('rab/unit/'.$properti);
+			} else {
+				$input = [
+					"nama_rab"=>$this->input->post('nama_rab',true)
+				];
+				$query = $this->modelapp->updateData($input,'rab_properti',['id_rab'=>$id]);
+				if ($query) {
+					$this->session->set_flashdata('success',"Data berhasil ditambahkan");
+					redirect('rab/unit/'.$properti);
+				} else {
+					$this->session->set_flashdata('failed',"Tidak ada perubahan");
+					redirect('rab/unit/'.$properti);
+				}
+			}
+		}
 	}
 
 	private function pages($page,$data)

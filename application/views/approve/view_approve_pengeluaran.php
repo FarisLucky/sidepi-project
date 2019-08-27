@@ -22,7 +22,7 @@
           <div class="card-body">
             <div class="row">
               <div class="col-sm-12">
-                <table class="table table-hover table-striped" id="tbl_approve_pembayaran">
+                <table class="table table-hover table-striped" id="tbl_to_tables">
                   <thead>
                     <th>No</th>
                     <th>Nama Pengeluaran</th>

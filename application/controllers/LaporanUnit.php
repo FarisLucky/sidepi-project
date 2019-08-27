@@ -20,11 +20,22 @@ class LaporanUnit extends CI_Controller {
         $data['img'] = getCompanyLogo();
         if ($_SESSION['id_akses'] === "1") {
             $data['unit'] = $this->modelapp->getData('*','unit')->result();
-        }else{
+            $data['total'] = $this->modelapp->getData('COUNT(id_unit) as total','unit')->row_array();
+            $bt = ['status_unit'=>'bt'];
+            $b = ['status_unit'=>'b'];
+            $t = ['status_unit'=>'t'];
+        } else {
             $data['unit'] = $this->modelapp->getData('*','unit',['id_properti'=>$id])->result_array();
             $data['site_plan'] = $this->modelapp->getData('foto_properti','properti',['id_properti'=>$id])->row_array();
             $data["list_unit"] = $this->modelapp->getData("nama_unit,status_unit","unit",["id_properti"=>$id])->result();
+            $data['total'] = $this->modelapp->getData('COUNT(id_unit) as total','unit',['id_properti'=>$id])->row_array();
+            $bt = ['status_unit'=>'bt','id_properti'=>$_SESSION['id_properti']];
+            $b = ['status_unit'=>'b','id_properti'=>$_SESSION['id_properti']];
+            $t = ['status_unit'=>'t','id_properti'=>$_SESSION['id_properti']];
         }
+        $data['bt'] = $this->modelapp->getData('COUNT(id_unit) as bt','unit',$bt)->row_array();
+        $data['b'] = $this->modelapp->getData('COUNT(id_unit) as b','unit',$b)->row_array();
+        $data['t'] = $this->modelapp->getData('COUNT(id_unit) as t','unit',$t)->row_array();
         $data['sasaran_unit'] = $this->modelapp->getData("id_sasaran,nama_kelompok","kelompok_persyaratan",['kategori_persyaratan'=>'unit'])->result();
         $data["properti"] = $this->modelapp->getData('*','tbl_properti')->result();
         $this->pages("laporan/view_unit",$data);
@@ -99,17 +110,27 @@ class LaporanUnit extends CI_Controller {
         $data['unit'] = $this->modelapp->getData("*","unit",["id_unit"=>$id])->row();
         $data['detail_unit'] = $this->modelapp->getData("*","kelompok_persyaratan",["kategori_persyaratan"=>"unit"])->result();
         $data['get_unit'] = $this->modelapp->getData("*","persyaratan_unit",["id_unit"=>$id])->result();
+        $data['doc_unit'] = $this->modelapp->getJoinData("*","persyaratan_unit",['kelompok_persyaratan'=>'kelompok_persyaratan.id_sasaran = persyaratan_unit.kelompok_persyaratan'],['id_unit'=>$id])->result_array();
+        $data['booking'] =$this->modelapp->getData('*','tbl_transaksi',['id_unit'=>$id,'status_transaksi'=>'p'])->row_array();
         $this->pages("laporan/view_detail_unit",$data); 
     }
     
     public function getJumlah()
     {
-        $id = $this->session->userdata('id_properti');
-        $data['total'] = $this->modelapp->getData('COUNT(*) as total','unit',['id_properti'=>$id])->row_array();
+        $id = $this->input->post('id',true);
+        $data['ttl'] = $this->modelapp->getData('COUNT(id_unit) as total','unit',['id_properti'=>$id])->row_array();
         $data['bt'] = $this->modelapp->getData('COUNT(id_unit) as bt','unit',['status_unit'=>'bt','id_properti'=>$id])->row_array();
         $data['b'] = $this->modelapp->getData('COUNT(id_unit) as b','unit',['status_unit'=>'b','id_properti'=>$id])->row_array();
         $data['t'] = $this->modelapp->getData('COUNT(id_unit) as t','unit',['status_unit'=>'t','id_properti'=>$id])->row_array();
         return $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
+    public function printDoc($id)
+    {
+        $data_unit = $this->modelapp->getData('kelompok_persyaratan,file','persyaratan_unit',['id_persyaratan'=>$id])->row_array();
+        $data['link'] = base_url('assets/uploads/files/unit/'.$data_unit['file']);
+        $data['name'] = $data_unit['kelompok_persyaratan'].'.pdf'; 
+        $this->load->view('print/custom_print', $data);
     }
     
     private function pages($url ,$data)

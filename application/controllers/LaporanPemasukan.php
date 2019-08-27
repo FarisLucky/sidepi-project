@@ -8,7 +8,6 @@ class LaporanPemasukan extends CI_Controller {
     {
         parent::__construct();
         $this->rolemenu->init();
-        $this->load->model('Model_laporan','Mlaporan');
     }
     public function index()
     {
