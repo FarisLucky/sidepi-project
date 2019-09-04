@@ -50,6 +50,8 @@ class Konsumen extends CI_Controller
     
     public function ubah($id)
     {
+        $this->load->helper('date');
+        
         $data['title'] = 'Ubah Data';
         $data['menus'] = $this->rolemenu->getMenus();
         $data['doc_konsumen'] = $this->modelapp->getJoinData("*","persyaratan_konsumen",['kelompok_persyaratan'=>'kelompok_persyaratan.id_sasaran = persyaratan_konsumen.kelompok_persyaratan'],['id_konsumen'=>$id])->result_array();
@@ -289,9 +291,10 @@ class Konsumen extends CI_Controller
 
     public function printDoc($id)
     {
-        $data_konsumen = $this->modelapp->getData('kelompok_persyaratan,file','persyaratan_konsumen',['id_persyaratan'=>$id])->row_array();
+        // $data_konsumen = $this->modelapp->getData('kelompok_persyaratan,file','persyaratan_konsumen',['id_persyaratan'=>$id])->row_array();
+        $data_konsumen = $this->modelapp->getJoinData('*','persyaratan_konsumen',['kelompok_persyaratan'=>'persyaratan_konsumen.kelompok_persyaratan = kelompok_persyaratan.id_sasaran'],['id_persyaratan'=>$id])->row_array();
         $data['link'] = base_url('assets/uploads/files/konsumen/'.$data_konsumen['file']);
-        $data['name'] = $data_konsumen['kelompok_persyaratan'].'.pdf'; 
+        $data['name'] = $data_konsumen['nama_kelompok'].'.pdf'; 
         $this->load->view('print/custom_print', $data);
     }
 

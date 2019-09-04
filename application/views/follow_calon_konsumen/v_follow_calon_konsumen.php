@@ -35,8 +35,8 @@
                         <th>Nama Konsumen</th>
                         <th>Tanggal Mendaftar</th>
                         <th>Media</th>
-                        <th>Keterangan</th>
                         <th>Hasil Follow</th>
+                        <th>Keterangan</th>
                         <th>Aksi</th>
                       </tr>
                     </thead>
@@ -51,14 +51,14 @@
                         <td><?php echo $f['nama_lengkap'] ?></td>
                         <td><?php echo $tanggal ?></td>
                         <td><?php echo $f['media'] ?></td>
+                        <td><?php echo $f['hasil_follow'] == 'bs' ? 'belum selesai' : 'selesai' ?></td>
                         <td><?php echo $f['keterangan'] ?></td>
-                        <td><?php echo $f['hasil_follow'] ?></td>
                         <td width="250">
                           <a href="<?php echo site_url('followcalon/ubah/' . $f['id_follow']) ?>"
-                            class="btn btn-sm btn-primary"><i class="fa fa-edit"></i> Edit</a>
+                            class="btn btn-icons btn-inverse-primary"><i class="fa fa-edit"></i></a>
                           <a href="<?php echo site_url('followcalon/hapus/' . $f['id_follow']) ?>"
                             onclick="deleteItem('<?= base_url('followcalon/hapus/'.$f['id_konsumen']) ?>');"
-                            class="btn btn-sm btn-danger"><i class="fa fa-trash"></i> Hapus</a>
+                            class="btn btn-icons btn-inverse-danger"><i class="fa fa-trash"></i></a>
                         </td>
                       </tr>
                       <?php endforeach; ?>

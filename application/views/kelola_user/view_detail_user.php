@@ -5,9 +5,6 @@
         <div class="row">
           <div class="col-sm-12">
             <h4 class="dark txt_title d-inline-block mt-2">Kelola User</h4>
-            <img id="logo_perusahaan" width="50px"
-              src="<?= base_url().'assets/uploads/images/properti/'.$img->logo_perusahaan ?>" class="float-right"
-              alt="">
           </div>
         </div>
       </div>
@@ -80,8 +77,10 @@
               </div>
               <div class="col-md-4 text-center">
                 <small class="txt-normal mb-2">Foto Profil</small>
-                <img src="<?= base_url()."assets/uploads/images/profil/user/".$users->foto_user ?> " width="85%"
-                  class="img-thumbnail">
+                <a href="<?= base_url()."assets/uploads/images/profil/user/".$users->foto_user ?>"
+                  data-lightbox="example"><img
+                    src="<?= base_url()."assets/uploads/images/profil/user/".$users->foto_user ?>" width="85%"
+                    class="img-thumbnail"></a>
               </div>
             </div>
           </div>
@@ -103,8 +102,10 @@
                     $check = getProperti($id,$users->id_user);
                 ?>
             <div class="col-sm-3 mt-3">
-              <img src="<?= base_url() ?>assets/uploads/images/properti/<?= $prop->foto_properti ?>" width="120px"
-                class="img-rounded text-center">
+              <a href="<?= base_url('assets/uploads/images/properti/'.$prop->foto_properti) ?>"
+                data-lightbox="foto_properti"><img
+                  src="<?= base_url('assets/uploads/images/properti/'.$prop->foto_properti) ?>" width="120px"
+                  class="img-rounded text-center"></a>
               <div class="form-group">
                 <div class="col-sm-12">
                   <div class="form-check form-check-flat">

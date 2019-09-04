@@ -2,7 +2,7 @@
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class MngApprove extends CI_Controller {
+class Mngapprove extends CI_Controller {
 
     
     public function __construct()

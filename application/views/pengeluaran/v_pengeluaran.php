@@ -79,7 +79,6 @@
                             onclick="setItem('<?= base_url('pengeluaran/lock/'.$p->id_pengeluaran) ?>','lock')"><i
                               class="fa fa-lock"></i></button>
                           <?php } elseif ($p->status_owner == 'sl' && $p->status_manager == 'sl') { ?>
-
                           <i>-</i>
                           <?php } else { ?>
 

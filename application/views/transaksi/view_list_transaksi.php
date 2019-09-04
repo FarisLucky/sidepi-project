@@ -60,7 +60,7 @@
                     <div class="badge badge-primary"><?= $status ?></div>
                   </td>
                   <td>
-                    <?php if (($value->kunci != "l") && ($value->status_transaksi == "s")) { ?>
+                    <?php if (($value->kunci == "u") && ($value->status_transaksi == "s")) { ?>
                     <a href="<?= base_url() ?>transaksi/detail/<?= $value->id_transaksi ?>" class="btn btn-sm"><i
                         class="fa fa-info" data-toggle="tooltip" data-placement="bottom" title="Detail"></i></a>
                     <a onclick="deleteItem('<?= base_url('transaksi/delete/'.$value->id_transaksi) ?>')"
@@ -69,7 +69,7 @@
                     <a href="<?= base_url() ?>transaksi/edit/<?= $value->id_transaksi ?>" class="btn btn-sm"><i
                         class="fa fa-pencil-square text-info" data-toggle="tooltip" data-placement="bottom"
                         title="Edit"></i></a>
-                    <?php } elseif (($value->kunci != "l") && ($value->status_transaksi == "p")) { ?>
+                    <?php } elseif (($value->kunci == "u") && ($value->status_transaksi == "p")) { ?>
                     <a href="<?= base_url() ?>transaksi/detail/<?= $value->id_transaksi ?>" class="btn btn-sm"><i
                         class="fa fa-info" data-toggle="tooltip" data-placement="bottom" title="Detail"></i></a>
                     <a href="<?= base_url() ?>transaksi/edit/<?= $value->id_transaksi ?>" class="btn btn-sm"><i

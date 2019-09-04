@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class ProfilPerusahaan extends CI_Controller 
+class Profilperusahaan extends CI_Controller 
 {
     public function __construct()
     {
@@ -23,11 +23,11 @@ class ProfilPerusahaan extends CI_Controller
     }
     public function update()
     {
-        $this->form_validation->set_rules('txt_siup','SIUP','trim|required');
-        $this->form_validation->set_rules('txt_tdp','TDP','trim|required');
-        $this->form_validation->set_rules('txt_namaperusahaan','Nama','trim|required');
+        $this->form_validation->set_rules('txt_siup','SIUP','trim|required|max_length[25]');
+        $this->form_validation->set_rules('txt_tdp','TDP','trim|required|max_length[25]');
+        $this->form_validation->set_rules('txt_namaperusahaan','Nama','trim|required|max_length[50]');
         $this->form_validation->set_rules('txt_email','Email','trim|required|valid_email');
-        $this->form_validation->set_rules('txt_telp','Telp','trim|required');
+        $this->form_validation->set_rules('txt_telp','Telp','trim|required|max_length[13]');
         $this->form_validation->set_rules('txt_alamat','Alamat','trim|required');       
         if ($this->form_validation->run() == false) {
             $this->index();

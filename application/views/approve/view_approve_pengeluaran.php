@@ -1,78 +1,67 @@
 <div class="content-wrapper" id="approve_bayar">
   <div class="container">
-    <div class="row">
-      <div class="col-sm-12">
-        <div class="card">
-          <div class="card-body p-4">
-            <div class="row">
-              <div class="col-sm-12">
-                <h4 class="dark txt_title d-inline-block mt-2">Approve Pengeluaran</h4>
-                <img id="logo_perusahaan" width="50px"
-                  src="<?php echo base_url().'assets/uploads/images/properti/'.$img->logo_perusahaan ?>"
-                  class="float-right" alt="">
-              </div>
-            </div>
+    <div class="card">
+      <div class="card-body p-4">
+        <div class="row">
+          <div class="col-sm-12">
+            <h4 class="dark txt_title d-inline-block mt-2">Approve Pengeluaran</h4>
           </div>
         </div>
       </div>
     </div>
-    <div class="row mt-3">
-      <div class="col-sm-12">
-        <div class="card">
-          <div class="card-body">
-            <div class="row">
-              <div class="col-sm-12">
-                <table class="table table-hover table-striped" id="tbl_to_tables">
-                  <thead>
-                    <th>No</th>
-                    <th>Nama Pengeluaran</th>
-                    <th>Kelompok</th>
-                    <th>Jumlah</th>
-                    <th>Harga Satuan</th>
-                    <th>Total Harga</th>
-                    <th>Bukti</th>
-                    <th>Tanggal Buat</th>
-                    <th>Status Manager</th>
-                    <th>Pembuat</th>
-                    <th>Aksi</th>
-                  </thead>
-                  <tbody>
-                    <?php $no=1 ; foreach ($approve_bayar as $key => $value) : 
+    <div class="card mt-3">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-sm-12">
+            <table class="table table-hover table-striped" id="tbl_to_tables">
+              <thead>
+                <th>No</th>
+                <th>Nama Pengeluaran</th>
+                <th>Kelompok</th>
+                <th>Jumlah</th>
+                <th>Harga Satuan</th>
+                <th>Total Harga</th>
+                <th>Bukti</th>
+                <th>Tanggal Buat</th>
+                <th>Status Manager</th>
+                <th>Pembuat</th>
+                <th>Aksi</th>
+              </thead>
+              <tbody>
+                <?php $no=1 ; foreach ($approve_bayar as $key => $value) : 
                       if ($value->bukti_kwitansi != '') {
-                        $img = '<img src="'.base_url('assets/uploads/images/pengeluaran/'.$value->bukti_kwitansi).'">';
+                        $img = '<a href="'.base_url('assets/uploads/images/pengeluaran/'.$value->bukti_kwitansi).'" data-lightbox="'.$value->id_pengeluaran.'"></a><img src="'.base_url('assets/uploads/images/pengeluaran/'.$value->bukti_kwitansi).'">';
                       } else {
                         $img = '<i>Belum Upload</i>';
                       }
                       ?>
-                    <tr>
-                      <td><?= $no ?></td>
-                      <td><?= $value->nama_pengeluaran ?></td>
-                      <td><?= $value->nama_kelompok ?></td>
-                      <td><?= $value->volume.' '.$value->satuan ?></td>
-                      <td><?= $value->harga_satuan ?></td>
-                      <td><?= $value->total_harga ?></td>
-                      <td><?= $img ?></td>
-                      <td>
-                        <?php $date = DateTime::createFromFormat('Y-m-d',$value->tgl_buat); echo tanggal($date->format('d'),$date->format('m'),$date->format('Y')) ?>
-                      </td>
-                      <td><span
-                          class="badge badge-info"><?= $value->status_manager == 's' ? '-' : ($value->status_manager == 'p' ? 'pending' : 'selesai') ; ?></span>
-                      </td>
-                      <td><?php echo $value->nama_lengkap;?></td>
-                      <td>
-                        <button type="button" class="btn btn-icons btn-inverse-primary ml-2"
-                          onclick="setItem('<?= base_url('approvepengeluaran/accept/'.$value->id_pengeluaran) ?>','Terima')">
-                          <i class="fa fa-check"></i></button>
-                        <button type="button" class="btn btn-icons btn-inverse-danger"
-                          onclick="setItem('<?= base_url('approvepengeluaran/reject/'.$value->id_pengeluaran) ?>','Tolak')">
-                          <i class="fa fa-ban"></i></button>
-                      </td>
-                    </tr>
-                    <?php $no++; endforeach; ?>
-                  </tbody>
-                </table>
-              </div>
-            </div>
+                <tr>
+                  <td><?= $no ?></td>
+                  <td><?= $value->nama_pengeluaran ?></td>
+                  <td><?= $value->nama_kelompok ?></td>
+                  <td><?= $value->volume.' '.$value->satuan ?></td>
+                  <td><?= $value->harga_satuan ?></td>
+                  <td><?= $value->total_harga ?></td>
+                  <td><?= $img ?></td>
+                  <td>
+                    <?php $date = DateTime::createFromFormat('Y-m-d',$value->tgl_buat); echo tanggal($date->format('d'),$date->format('m'),$date->format('Y')) ?>
+                  </td>
+                  <td><span
+                      class="badge badge-info"><?= $value->status_manager == 's' ? '-' : ($value->status_manager == 'p' ? 'pending' : 'selesai') ; ?></span>
+                  </td>
+                  <td><?php echo $value->nama_lengkap;?></td>
+                  <td>
+                    <button type="button" class="btn btn-icons btn-inverse-primary ml-2"
+                      onclick="setItem('<?= base_url('approvepengeluaran/accept/'.$value->id_pengeluaran) ?>','Terima')">
+                      <i class="fa fa-check"></i></button>
+                    <button type="button" class="btn btn-icons btn-inverse-danger"
+                      onclick="setItem('<?= base_url('approvepengeluaran/reject/'.$value->id_pengeluaran) ?>','Tolak')">
+                      <i class="fa fa-ban"></i></button>
+                  </td>
+                </tr>
+                <?php $no++; endforeach; ?>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>

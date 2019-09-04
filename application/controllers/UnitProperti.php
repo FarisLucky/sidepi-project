@@ -1,7 +1,8 @@
 <?php
+
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class UnitProperti extends CI_Controller {
+class Unitproperti extends CI_Controller {
 
     
     public function __construct()
@@ -263,7 +264,7 @@ class UnitProperti extends CI_Controller {
         $this->form_validation->set_rules('satuan_tanah','Satuan Tanah','trim|required|max_length[5]');
         $this->form_validation->set_rules('txt_bangunan','Luas Bangunan','trim|required|numeric');
         $this->form_validation->set_rules('satuan_bangunan','Satuan Bangunan','trim|required|max_length[5]');
-        $this->form_validation->set_rules('txt_harga','Harga','trim|required|numeric');
+        $this->form_validation->set_rules('txt_harga','Harga','trim|required|numeric|max_length[9]');
         $this->form_validation->set_rules('txt_alamat','Alamat','trim|required');
         $this->form_validation->set_rules('txt_desc','Deskripsi','trim|required');
     }

@@ -2,7 +2,7 @@
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class LaporanPengeluaran extends CI_Controller 
+class Laporanpengeluaran extends CI_Controller 
 {
     
     public function __construct()
@@ -16,6 +16,7 @@ class LaporanPengeluaran extends CI_Controller
         $data['menus'] = $this->rolemenu->getMenus();
         $data['img'] = getCompanyLogo();
         $data["kelompok"] = $this->modelapp->getData("*","kelompok_item",["id_kategori"=>3])->result();
+        $data['pengeluaran'] = $this->modelapp->getData('SUM(total_harga) as total','tbl_pengeluaran',['status_owner'=>'sl','status_manager'=>'sl'])->row_array();
         $this->pages("laporan/pengeluaran/view_pengeluaran",$data);
     }
 
@@ -28,22 +29,20 @@ class LaporanPengeluaran extends CI_Controller
         $order = "id_pengeluaran";
         $fetch_values = $this->ssd->makeDataTables($column,$tbl,null,$order,null,$where);
         $data = array();
-        $no = 1;
         foreach ($fetch_values as $value) {
             $sub = array();
-            $sub[] = $no;
             $sub[] = $value->nama_pengeluaran;
             $sub[] = $value->nama_kelompok;
             $sub[] = $value->volume." ".$value->satuan;
             $sub[] = number_format($value->harga_satuan,2,",",".");
             $sub[] = number_format($value->total_harga,2,",",".");
-            $sub[] = $value->status_owner == 'sl' ? 'selesai' : ($value->status_owner == 'p' ? 'pending' : '-');
-            $sub[] = $value->status_manager == 'sl' ? 'selesai' : ($value->status_manager == 'p' ? 'pending' : '-');
+            $sub[] = $value->nama_properti;
+            $sub[] = $value->nama_unit;
             $sub[] = $value->nama_lengkap;
             $sub[] = $value->tgl_buat;
+            $sub[] = '<a href="'.base_url('assets/uploads/images/pengeluaran/'.$value->bukti_kwitansi).'" data-lightbox="data'.$value->id_pengeluaran.'"><img src="'.base_url('assets/uploads/images/pengeluaran/'.$value->bukti_kwitansi).'"></a>';
             $sub[] = '<a href="'.base_url('laporanpengeluaran/printpengeluaran/'.$value->id_pengeluaran).'" class="btn btn-icons btn-inverse-warning mx-2"><i class="fa fa-print"></i></a>';
             $data[] = $sub;
-            $no++;
         }
         $output = array(
             'draw'=>intval($this->input->post('draw')),

@@ -11,8 +11,8 @@ class Pemasukan extends CI_Controller
 	}
 	public function index()
 	{
-		$data["title"] = "Pengeluaran";
-		$data['pengeluaran'] = $this->modelapp->getData("*","tbl_pemasukan",["id_properti"=>$_SESSION["id_properti"]])->result();
+		$data["title"] = "Pemasukan";
+		$data['pemasukan'] = $this->modelapp->getData("*","tbl_pemasukan",["id_properti"=>$_SESSION["id_properti"]])->result();
 		$data['menus'] = $this->rolemenu->getMenus();
 		$data['img'] = getCompanyLogo();
 		$this->pages('pemasukan/view_pemasukan',$data);
@@ -23,6 +23,7 @@ class Pemasukan extends CI_Controller
 		$data['menus'] = $this->rolemenu->getMenus();
 		$data['img'] = getCompanyLogo();
 		$data['kelompok'] = $this->modelapp->getData('*','kelompok_item',['id_kategori'=>4,"status"=>"a"])->result();
+		$data['unit'] = $this->modelapp->getData('id_unit,nama_unit','unit',['id_properti'=>$_SESSION['id_properti']])->result();
 		$this->pages('pemasukan/view_tambah',$data);
 	}
 	public function coreTambah()
@@ -42,18 +43,17 @@ class Pemasukan extends CI_Controller
 					$img = $this->upload->data();
 					$gambar = $img['file_name'];
 					$input += ['bukti_kwitansi'=>$gambar];
-					$query = $this->modelapp->insertData($data,'pemasukan');
+					$query = $this->modelapp->insertData($input,'pemasukan');
 					if ($query) {
 						$this->session->set_flashdata('success','Data berhasil ditambahkan');
 						redirect('pemasukan/tambah');
 					}
-				}
-				else{
+				} else {
 					$error = $this->upload->display_errors();
 					$this->session->set_flashdata('error',$error);
 					$this->tambah();
 				}
-			}else{
+			} else {
 				$query = $this->modelapp->insertData($input,'pemasukan');
 				if ($query) {
 					$this->session->set_flashdata('success','Data berhasil ditambahkan');
@@ -80,6 +80,31 @@ class Pemasukan extends CI_Controller
 			}
 		} else {
 			$this->session->set_flashdata('failed','Data tidak ditemukan');
+			redirect('pemasukan');
+		}
+	}
+	
+	public function lock($id)
+	{
+		$input = $id;
+		$get_data = $this->modelapp->getData('id_pemasukan,status_manager','pemasukan',['id_pemasukan'=>$input]);
+		if ($get_data->num_rows() > 0) {
+			$rs_pemasukan = $get_data->row_array();
+			if ($rs_pemasukan['status_manager'] == 'sl') {
+				$query_update = $this->modelapp->updateData(['status_owner'=>'p'],'pemasukan',['id_pemasukan'=>$rs_pemasukan['id_pemasukan']]);
+				if ($query_update) {
+					$this->session->set_flashdata('success','Berhasil disimpan');
+					redirect('pemasukan');
+				}
+			} else {
+				$query_update = $this->modelapp->updateData(['status_owner'=>'p','status_manager'=>'p'],'pemasukan',['id_pemasukan'=>$rs_pemasukan['id_pemasukan']]);
+				if ($query_update) {
+					$this->session->set_flashdata('success','Berhasil disimpan');
+					redirect('pemasukan');
+				}
+			}
+		} else {
+			$this->session->set_flashdata('success','Berhasil disimpan');
 			redirect('pemasukan');
 		}
 	}
@@ -148,6 +173,7 @@ class Pemasukan extends CI_Controller
 		$this->form_validation->set_rules('satuan', 'Satuan', 'trim|required|min_length[1]|max_length[50]');
 		$this->form_validation->set_rules('harga_satuan', 'Harga', 'trim|required|numeric');
 		$this->form_validation->set_rules('kelompok', 'Kelompok Pengeluaran', 'trim|required');
+		$this->form_validation->set_rules('unit', 'Unit', 'trim|required');
 	}
 	private function pages($path,$data)
 	{
@@ -164,6 +190,7 @@ class Pemasukan extends CI_Controller
 			'satuan' => $this->input->post('satuan',true),
 			'harga_satuan' => $this->input->post('harga_satuan',true),
 			'total_harga' => (int) ($this->input->post('volume') * $this->input->post('harga_satuan')),
+			'id_unit'=>$this->input->post('unit',true),
 			'id_kelompok'=>$this->input->post('kelompok',true)
 		);
 		return $data;

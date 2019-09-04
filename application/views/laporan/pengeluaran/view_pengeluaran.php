@@ -5,9 +5,6 @@
         <div class="row">
           <div class="col-sm-12">
             <h4 class="dark txt_title d-inline-block mt-2">Laporan Pengeluaran </h4>
-            <img id="logo_perusahaan" width="50px"
-              src="<?php echo base_url().'assets/uploads/images/properti/'.$img->logo_perusahaan ?>" class="float-right"
-              alt="">
           </div>
         </div>
         <hr>
@@ -42,7 +39,7 @@
           <div class="row">
             <div class="col-md-6 col-sm-12">
               <button type="button"
-                onclick="searchData(['id_kelompok','tgl_mulai','tgl_akhir'],'<?= $this->security->get_csrf_hash() ?>','#tbl_laporan_pengeluaran','<?= base_url('laporanpengeluaran/dataproses') ?>')"
+                onclick="searchData(['id_kelompok','tgl_mulai','tgl_akhir'],'<?= $this->security->get_csrf_hash() ?>','#tbl_laporan_pengeluaran','<?= base_url('laporanpengeluaran/dataproses') ?>');"
                 class="btn btn-primary" id="search_kontrol"><i class="fa fa-search"></i>Search</button>
               <button type="submit" class="btn btn-warning"><i class="fa fa-print"></i>Print</button>
             </div>
@@ -64,20 +61,28 @@
               <table class="table table-bordered table-hover" id="tbl_laporan_pengeluaran">
                 <thead>
                   <tr>
-                    <th>No</th>
                     <th>Pengeluaran</th>
                     <th>Kelompok</th>
                     <th>Jumlah</th>
                     <th>Harga</th>
                     <th>Total Harga</th>
-                    <th>Status Owner</th>
-                    <th>Status Manager</th>
+                    <th>Properti</th>
+                    <th>Unit</th>
                     <th>Pembuat</th>
+                    <th>Bukti</th>
                     <th>Tanggal Buat</th>
                     <th>Aksi</th>
                   </tr>
                 </thead>
               </table>
+            </div>
+          </div>
+        </div>
+        <div class="text-jual text-right border-right-color py-2 mt-3">
+          <div class="row">
+            <div class="col-sm-12">
+              <small class="txt-normal">Total Semua Pengeluaran</small>
+              <small class="txt-normal-b" id="ttl">:&emsp;<?= number_format($pengeluaran['total'],2,',','.'); ?></small>
             </div>
           </div>
         </div>

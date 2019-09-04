@@ -110,7 +110,7 @@ class Persyaratan extends CI_Controller {
             array(
                 'field' => 'nama',
                 'label' => 'Nama Persyaratan',
-                'rules' => 'trim|required'
+                'rules' => 'trim|required|max_length[50]'
             ),
             array(
                 'field' => 'type',

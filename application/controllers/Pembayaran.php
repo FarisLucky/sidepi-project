@@ -205,7 +205,7 @@ class Pembayaran extends CI_Controller {
         $column = "*";
         $tbl = 'tbl_pembayaran';
         $order = 'id_pembayaran';
-        $having = ['id_properti'=>$id_properti,'jenis_pembayaran'=>$_POST['id_jenis']];
+        $having = ['id_properti'=>$id_properti,'jenis_pembayaran'=>$_POST['id_jenis'],'status !='=>'s'];
         if (!empty($_POST['pilih_unit'])) {
             $having += ['id_unit'=>$_POST['pilih_unit']];
         }

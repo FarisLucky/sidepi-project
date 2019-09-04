@@ -2,7 +2,7 @@
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class ApprovePengeluaran extends CI_Controller {
+class Approvepengeluaran extends CI_Controller {
 
     
     public function __construct()

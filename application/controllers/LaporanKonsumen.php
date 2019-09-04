@@ -3,7 +3,7 @@
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class LaporanKonsumen extends CI_Controller {
+class Laporankonsumen extends CI_Controller {
 
     
     public function __construct()
@@ -81,7 +81,7 @@ class LaporanKonsumen extends CI_Controller {
 
     public function printDoc($id)
     {
-        $data_konsumen = $this->modelapp->getData('kelompok_persyaratan,file','persyaratan_konsumen',['id_persyaratan'=>$id])->row_array();
+        $data_konsumen = $this->modelapp->getJoinData('*','persyaratan_konsumen',['kelompok_persyaratan'=>'persyaratan_konsumen.kelompok_persyaratan = kelompok_persyaratan.id_sasaran'],['id_persyaratan'=>$id])->row_array();
         $data['link'] = base_url('assets/uploads/files/konsumen/'.$data_konsumen['file']);
         $data['name'] = $data_konsumen['kelompok_persyaratan'].'.pdf'; 
         $this->load->view('print/custom_print', $data);

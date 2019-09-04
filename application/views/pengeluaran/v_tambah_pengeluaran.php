@@ -62,6 +62,7 @@
                       <option value="<?= $u->id_unit ?>"><?= $u->nama_unit ?></option>
                       <?php } ?>
                     </select>
+                    <small class="text-small text-danger"><?= form_error("unit") ?></small>
                   </div>
                   <div class="form-group">
                     <label for="txt_file">Pilih Kelompok</label>

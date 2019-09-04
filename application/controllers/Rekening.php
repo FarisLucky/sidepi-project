@@ -69,6 +69,11 @@ class Rekening extends CI_Controller {
                 "kategori_persyaratan"=>$this->input->post("type",true),
                 "keterangan"=>$this->input->post("ket",true)
             ];
+            if ($_POST['lock'] == 'l') {
+                $input += ['status'=>'1'];
+            } else {
+                $input += ['status'=>'0'];
+            }
             $query = $this->modelapp->updateData($input,'kelompok_persyaratan',['id_sasaran'=>$id]);
             if ($query) {
                 $this->session->set_flashdata('success', 'Data Berhasil diubah');
@@ -132,7 +137,7 @@ class Rekening extends CI_Controller {
     {
         $this->form_validation->set_rules('no_rek', 'No Rekening', 'trim|required|min_length[3]|max_length[16]');
         $this->form_validation->set_rules('bank', 'Bank', 'trim|required|max_length[10]');
-        $this->form_validation->set_rules('pemilik', 'Pemilik Rekening', 'trim|required|min_length[5]|max_length[50]');
+        $this->form_validation->set_rules('pemilik', 'Pemilik Rekening', 'trim|required|min_length[5]|max_length[25]');
     }
     private function input()
     {

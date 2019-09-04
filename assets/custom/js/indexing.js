@@ -109,6 +109,11 @@ $(function () {
       id_tkn: csrf_value
     });
   }
+  if ($("#all_bayar").length > 0) {
+    dataTablesWithSearch("#all_bayar", base + "laporanpembayaran/dataproses", {
+      id_tkn: csrf_value
+    });
+  }
 
   // Properti Controller Javascript
   $(document).on("change", "#detail_property input[name='foto']", function (e) {

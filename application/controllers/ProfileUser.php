@@ -2,7 +2,7 @@
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class ProfileUser extends CI_Controller {
+class Profileuser extends CI_Controller {
 
     
     public function __construct()
@@ -30,8 +30,16 @@ class ProfileUser extends CI_Controller {
             $this->index();
         } else {
             $id = $this->session->userdata("id_user");
+            $data = [
+                "nama_lengkap"=>$this->input->post("txt_nama",true),
+                "username"=>$this->input->post("txt_username",true),
+                "jenis_kelamin"=>$this->input->post("txt_jk",true),
+                "alamat"=>$this->input->post("txt_alamat",true),
+                "email"=>$this->input->post("txt_email",true),
+                "no_hp"=>$this->input->post("txt_telp",true)
+            ];
             $config['upload_path'] = './assets/uploads/images/profil/user/';
-            $config['allowed_types'] = 'gif|jpeg|jpg|png';
+            $config['allowed_types'] = 'jpeg|jpg|png';
             $config['max_size']     = '800';
             $config['encrypt_name'] = true;
             $config['max_width'] = '1024';
@@ -48,34 +56,31 @@ class ProfileUser extends CI_Controller {
                         }
                     }
                     $img = $this->upload->data();
-                    $data = [
-                        "nama_lengkap"=>$this->input->post("txt_nama",true),
-                        "username"=>$this->input->post("txt_username",true),
-                        "jenis_kelamin"=>$this->input->post("txt_jk",true),
-                        "alamat"=>$this->input->post("txt_alamat",true),
-                        "Email"=>$this->input->post("txt_email",true),
-                        "no_hp"=>$this->input->post("txt_telp",true),
+                    $data += [
                         "foto_user"=>$img["file_name"]
                     ];
-                    $this->modelapp->updateData($data,"user",["id_user"=>$id]);
+                    $query = $this->modelapp->updateData($data,"user",["id_user"=>$id]);
+                    if ($query) {
+                        $this->session->set_flashdata('success','Data berhasil diubah');
+                        redirect("profileuser");
+                    } else {
+                        $this->session->set_flashdata('success','Data berhasil diubah');
+                        redirect("profileuser");
+                    }
+                } else {
+                    $error = $this->upload->display_errors();
+                    $this->session->set_flashdata('error',$error);
                     redirect("profileuser");
                 }
-                else
-                {
-                    $error = $this->upload->display_errors();
-                    $this->index($error);
+            } else {
+                $query = $this->modelapp->updateData($data,"user",["id_user"=>$id]);
+                if ($query) {
+                    $this->session->set_flashdata('success','Data berhasil diubah');
+                    redirect("profileuser");
+                } else {
+                    $this->session->set_flashdata('success','Data berhasil diubah');
+                    redirect("profileuser");
                 }
-            }else{
-                $data = [
-                    "nama_lengkap"=>$this->input->post("txt_nama",true),
-                    "username"=>$this->input->post("txt_username",true),
-                    "jenis_kelamin"=>$this->input->post("txt_jk",true),
-                    "alamat"=>$this->input->post("txt_alamat",true),
-                    "Email"=>$this->input->post("txt_email",true),
-                    "no_hp"=>$this->input->post("txt_telp",true)
-                ];
-                $this->modelapp->updateData($data,"user",["id_user"=>$id]);
-                redirect("profileuser");
             }
         }
         
@@ -93,11 +98,9 @@ class ProfileUser extends CI_Controller {
         $data = ["success"=>false];
         $this->form_validation->set_rules('pass_baru', 'Password Baru', 'trim|required');
         $this->form_validation->set_rules('pass_lama', 'Password Lama', 'trim|required');
-        $this->form_validation->set_rules('confirm_pass_baru', 'Password Lama', 'trim|required|matches[pass_baru]');
+        $this->form_validation->set_rules('confirm_pass_baru', 'Confirm Password Baru', 'trim|required|matches[pass_baru]');
         if ($this->form_validation->run() == FALSE) {
-            foreach ($_POST as $key => $value) {
-                $data['msg'][$key] = form_error($key);
-            }
+            $this->authPassword();
         } else {
             $id_user = $this->session->userdata('id_user');
             $pass_lama = $this->input->post('pass_lama',true);
@@ -110,22 +113,23 @@ class ProfileUser extends CI_Controller {
                     $password = password_hash($pass_baru, PASSWORD_DEFAULT);
                     $this->modelapp->updateData(["password"=>$password],"user",["id_user"=>$id_user]);
                     $this->session->sess_destroy();
-                    $data["success"] = true;
+                    redirect('profileuser/authpassword');
+                    
                 }else{
-                    $data["error"] = "Password Lama Salah";
+                    $this->session->set_flashdata('failed','Password lama salah');
+                    redirect('profileuser/authpassword');
                 }
             }
         }
-        return $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
     private function validate()
     {
-        $this->form_validation->set_rules('txt_nama', 'Nama', 'trim|required|min_length[2]|max_length[90]');
-        $this->form_validation->set_rules('txt_username', 'Username', 'trim|required|min_length[3]|max_length[50]');
+        $this->form_validation->set_rules('txt_nama', 'Nama', 'trim|required|min_length[2]|max_length[25]');
+        $this->form_validation->set_rules('txt_username', 'Username', 'trim|required|min_length[3]|max_length[20]');
         $this->form_validation->set_rules('txt_telp', 'Telepon', 'trim|required|min_length[12]|max_length[13]|numeric');
-        $this->form_validation->set_rules('txt_email', 'Email', 'trim|required|min_length[3]|max_length[50]|valid_email');
-        $this->form_validation->set_rules('txt_jk', 'Jenis Kelamin', 'trim|required|min_length[5]|max_length[20]');
-        $this->form_validation->set_rules('txt_alamat', 'Alamat', 'trim|required|min_length[3]|max_length[255]');
+        $this->form_validation->set_rules('txt_email', 'Email', 'trim|required|min_length[3]|max_length[25]|valid_email');
+        $this->form_validation->set_rules('txt_jk', 'Jenis Kelamin', 'trim|required');
+        $this->form_validation->set_rules('txt_alamat', 'Alamat', 'trim|required');
         
     }
     private function pages($view,$data)

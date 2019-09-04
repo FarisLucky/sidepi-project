@@ -21,7 +21,7 @@
           </div>
         </div>
         <hr>
-        <form action="<?php echo base_url("rekening/coretambah"); ?>" method="post">
+        <form action="<?php echo base_url("rekening/coreubah"); ?>" method="post">
           <input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>"
             value="<?= $this->security->get_csrf_hash(); ?>">
           <input type="hidden" name="input_hidden" value=<?= $rek['id_rekening'] ?>>

@@ -48,7 +48,7 @@
               <i class="mdi mdi-chevron-double-right text-success icon-lg"></i>
             </div>
             <div class="float-right">
-              <p class="mb-0 text-right">Calon Konsumen</p>
+              <p class="mb-0 text-right">Calon</p>
               <div class="fluid-container">
                 <h3 class="font-weight-medium text-right mb-0">
                   <?= $total_calon['total'] ?></h3>
@@ -70,7 +70,7 @@
               <i class="mdi mdi-chevron-double-left text-info icon-lg"></i>
             </div>
             <div class="float-right">
-              <p class="mb-0 text-right">Total Calon Konsumen</p>
+              <p class="mb-0 text-right">Total Calon</p>
               <div class="fluid-container">
                 <h3 class="font-weight-medium text-right mb-0"><?= $total_semua_calon['total'] ?>
                 </h3>

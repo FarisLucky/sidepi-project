@@ -40,7 +40,7 @@
                   <tbody>
                     <?php foreach ($approve_bayar as $key => $value) : 
                       if ($value->bukti_bayar != '') {
-                        $img = '<img src="'.base_url('assets/uploads/images/pembayaran/'.$value->bukti_bayar).'">';
+                        $img = '<a href="'.base_url('assets/uploads/images/pembayaran/'.$value->bukti_bayar).'" data-lightbox="data'.$value->id_detail.'"><img src="'.base_url('assets/uploads/images/pembayaran/'.$value->bukti_bayar).'"></a>';
                       } else {
                         $img = '<i>Belum Upload</i>';
                       }
@@ -76,75 +76,6 @@
                 </table>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Modal -->
-<div class="modal fade" id="modal_approve_pembayaran">
-  <div class="modal-dialog ">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Approve Pembayaran</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="row">
-          <div class="col-sm-12 text-center">
-            <h6>Angsuran</h6>
-          </div>
-        </div>
-        <div class="row m-3">
-          <div class="col-sm-6">
-            <div class="form-group">
-              <label for="">Nama Properti</label>
-              <input type="text" class="form-control" name="properti" disabled>
-            </div>
-          </div>
-          <div class="col-sm-6">
-            <div class="form-group">
-              <label for="">Nama Unit</label>
-              <input type="text" class="form-control" name="unit" disabled>
-            </div>
-          </div>
-          <div class="col-sm-6">
-            <div class="form-group">
-              <label for="">Tanggal Jatuh Tempo</label>
-              <input type="text" class="form-control" name="tgl_tempo" disabled>
-            </div>
-          </div>
-          <div class="col-sm-6">
-            <div class="form-group">
-              <label for="">Tanggal Bayar</label>
-              <input type="text" class="form-control" name="tgl_bayar" disabled>
-            </div>
-          </div>
-          <div class="col-sm-4">
-            <div class="form-group">
-              <label for="">Total Tagihan</label>
-              <input type="text" class="form-control" name="tagihan" disabled>
-            </div>
-          </div>
-          <div class="col-sm-4">
-            <div class="form-group">
-              <label for="">Jumlah Bayar</label>
-              <input type="text" class="form-control" name="bayar" disabled>
-            </div>
-          </div>
-          <div class="col-sm-4">
-            <div class="form-group">
-              <label for="">Hutang</label>
-              <input type="text" class="form-control" name="hutang" disabled>
-            </div>
-          </div>
-          <hr>
-          <div class="col-sm-12 image">
-            <img src="" alt="" class="img-responsive gambar_bukti" width="100%">
           </div>
         </div>
       </div>

@@ -108,7 +108,7 @@ class Item extends CI_Controller
 			array(
 				'field' => 'nama_kelompok',
 				'label' => 'Nama Kelompok',
-				'rules' => 'trim|required'
+				'rules' => 'trim|required|max_length[50]'
 			),array(
 				'field' => 'select_kategori',
 				'label' => 'Kategori Kelompok',

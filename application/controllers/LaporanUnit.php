@@ -2,7 +2,7 @@
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class LaporanUnit extends CI_Controller {
+class Laporanunit extends CI_Controller {
 
     
     public function __construct()
@@ -66,7 +66,7 @@ class LaporanUnit extends CI_Controller {
             $sub[] = $value->luas_bangunan." ".$value->satuan_bangunan;
             $sub[] = number_format($value->harga_unit,2,",",".");
             $sub[] = $status;
-            $sub[] = '<img src="'.base_url('assets/uploads/images/unit_properti/'.$value->foto_unit).'">';
+            $sub[] = '<a href="'.base_url('assets/uploads/images/unit_properti/'.$value->foto_unit).'" data-lightbox="data'.$value->id_unit.'"><img src="'.base_url('assets/uploads/images/unit_properti/'.$value->foto_unit).'"></a>';
             $sub[] = '<a href="'.base_url('laporanunit/detail/'.$value->id_unit).'" class="btn btn-success"><i class="fa fa-info"></i> Detail</a>';
             $data[] = $sub;
         }
@@ -127,7 +127,7 @@ class LaporanUnit extends CI_Controller {
 
     public function printDoc($id)
     {
-        $data_unit = $this->modelapp->getData('kelompok_persyaratan,file','persyaratan_unit',['id_persyaratan'=>$id])->row_array();
+        $data_unit = $this->modelapp->getJoinData('*','persyaratan_unit',['kelompok_persyaratan'=>'persyaratan_unit.kelompok_persyaratan = kelompok_persyaratan.id_sasaran'],['id_persyaratan'=>$id])->row_array();
         $data['link'] = base_url('assets/uploads/files/unit/'.$data_unit['file']);
         $data['name'] = $data_unit['kelompok_persyaratan'].'.pdf'; 
         $this->load->view('print/custom_print', $data);

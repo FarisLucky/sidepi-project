@@ -96,6 +96,17 @@
                     </select>
                   </div>
                 </div>
+                <div class="col-sm-5">
+                  <small class="d-block">Foto</small>
+                  <?php if(file_exists('./assets/uploads/images/konsumen/'.$konsumen['foto_ktp'])) { ?>
+                  <a href="<?= base_url('assets/uploads/images/konsumen/'.$konsumen['foto_ktp']) ?>"
+                    data-lightbox="datas"><img
+                      src="<?= base_url('assets/uploads/images/konsumen/'.$konsumen['foto_ktp']) ?>"
+                      class="img-thumbnail"></a>
+                  <?php } else { ?>
+                  <i style="font-size: 18px">Foto Kosong</i>
+                  <?php }  ?>
+                </div>
               </div>
             </div>
             <div class="tab-pane fade" id="data_pasangan" role="tabpanel">

@@ -10,7 +10,7 @@
         <hr>
         <div class="row">
           <div class="col-sm-12">
-            <div class="alert alert-info">
+            <div class="border-left-color py-3">
               <small class="txt-normal">Total Calon : <b><?= $total_konsumen['jumlah_konsumen'] ?></b></small>
             </div>
           </div>

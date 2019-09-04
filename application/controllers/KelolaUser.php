@@ -2,10 +2,9 @@
 
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class KelolaUser extends CI_Controller
+class Kelolauser extends CI_Controller
 {
 
-    private $status;
     public function __construct()
     {
         parent::__construct();
@@ -38,28 +37,11 @@ class KelolaUser extends CI_Controller
         } else {
             $input = $this->inputPost();
             $password = password_hash($this->input->post('txt_password', true), PASSWORD_DEFAULT);
-            $input += ["password"=>$password];
-            $config = $this->uploadImg();
-            $this->load->library('upload', $config);
-            if ($_FILES['txt_foto']['name'] != "") {
-                if ($this->upload->do_upload('txt_foto')) {
-                    $img = $this->upload->data();
-                    $input += ["foto_user"=>$img["file_name"]];
-                    $this->modelapp->insertData($input,"user");
-                    $this->session->set_flashdata('success', "Berhasil ditambahkan");
-                    redirect("kelolauser");
-                } else {
-                    $error = $this->upload->display_errors();
-                    $this->session->set_flashdata('error', $error);
-                    $this->tambah();
-                }
-            } else {
-                $input += ["foto_user"=>"default.jpg"];
-                $act = $this->modelapp->insertData($input,"user");
-                if ($act) {
-                    $this->session->set_flashdata('success', "Berhasil ditambahkan");
-                    redirect("kelolauser");
-                }
+            $input += ["password"=>$password,"foto_user"=>"default.jpg",'tanggal_buat'=>date('Y-m-d')];
+            $act = $this->modelapp->insertData($input,"user");
+            if ($act) {
+                $this->session->set_flashdata('success', "Berhasil ditambahkan");
+                redirect("kelolauser/tambah");
             }
         }
     }
@@ -76,9 +58,9 @@ class KelolaUser extends CI_Controller
             if ($value->akses != 'owner') {
                 $this->status = '<a href="' . base_url() . 'kelolauser/detailuser/' . $value->id_user . '" class="btn btn-icons btn-inverse-info mx-2" id="detail_data_user"><i class="fa fa-info"></i></a><button type="button" class="btn btn-icons btn-inverse-danger" onclick="deleteItem('."'kelolauser/hapus/$value->id_user'".')"><i class="fa fa-trash"></i></button>';
                 if ($value->status_user == 'aktif') {
-                    $this->status .= '<button type="button" class="btn btn-sm btn-warning mx-2" onclick="setItem('."'kelolauser/aktifnonaktif/$value->id_user','Aktifkan'".')">Nonaktif</button>';
+                    $this->status .= '<button type="button" class="btn btn-sm btn-warning mx-2" onclick="setItem('."'kelolauser/aktifnonaktif/$value->id_user','Nonaktifkan'".')">Nonaktif</button>';
                 } else {
-                    $this->status .= '<button type="button" class="btn btn-sm btn-warning mx-2" onclick="setItem('."'kelolauser/aktifnonaktif/$value->id_user','Nonaktifkan'".')">Aktifkan</button>';
+                    $this->status .= '<button type="button" class="btn btn-sm btn-warning mx-2" onclick="setItem('."'kelolauser/aktifnonaktif/$value->id_user','Aktifkan'".')">Aktifkan</button>';
                 }
                 $this->status .= '<button class="btn btn-sm btn-success" onclick="getModal('."'$value->id_user'".')">Change Password</button>';
             } else {
@@ -157,13 +139,13 @@ class KelolaUser extends CI_Controller
     public function hapus($id) //Menghapus User
     {
         $foto = $this->modelapp->getData("foto_user","user",["id_user"=>$id])->row_array();
-        if ($foto["foto_user"] != "default.jpg") {
-            $path = "./assets/uploads/images/profil/user/".$foto["foto_user"];
+        $path = "./assets/uploads/images/profil/user/".$foto["foto_user"];
+            if ($foto["foto_user"] != "default.jpg") {
             if (file_exists($path) && !is_dir($path)) {
                 unlink($path);
             }
         }
-        $hapus = $this->modelapp->delete(["id_user"=>$id],"user");
+        $hapus = $this->modelapp->deleteData(["id_user"=>$id],"user");
         if ($hapus) {
             $this->session->set_flashdata('success',"Berhasil dihapus");
             redirect("kelolauser");
@@ -176,16 +158,20 @@ class KelolaUser extends CI_Controller
     {
         $this->form_validation->set_rules('pw_baru', 'Password Baru', 'trim|required');
         $this->form_validation->set_rules('confirm_pw_baru', 'Confirm Password', 'trim|required|matches[pw_baru]');
-        if ($this->form_validation->run() == FALSE) {
-            $this->session->set_flashdata('error',form_error());
-            $this->index();
+        if ($this->form_validation->run() == false) {
+            $this->session->set_flashdata('error',form_error('confirm_pw_baru'));
+            redirect('kelolauser');
         } else{
             $id = $this->input->post('input_hidden',true);
             $new_pass = $this->input->post("pw_baru",true);
             $password = password_hash($new_pass, PASSWORD_DEFAULT);
-            $change = $this->modelapp->updateData(["password"=>$passworpd],"user",["id_user"=>$id]);
+            $change = $this->modelapp->updateData(["password"=>$password],"user",["id_user"=>$id]);
             if ($change) {
-                $data["success"] = true;
+                $this->session->set_flashdata('success',"Data berhasil disimpan");
+                redirect("kelolauser");
+            } else {
+                $this->session->set_flashdata('failed',"Tidak ada perubahan");
+                redirect("kelolauser");
             }
         }
     }
@@ -195,7 +181,8 @@ class KelolaUser extends CI_Controller
         $this->form_validation->set_rules('txt_nama','Nama','trim|required|max_length[25]|min_length[3]');
         $this->form_validation->set_rules('txt_akses','Hak Akses','trim|required');
         $this->form_validation->set_rules('txt_telp','Telp','trim|required|max_length[13]|min_length[10]|greater_than[0]|is_unique[user.no_hp]');
-        $this->form_validation->set_rules('txt_username','Username','trim|required|is_unique[user.username]');
+        $this->form_validation->set_rules('txt_username','Username','trim|required|is_unique[user.username]|max_length[20]');
+        $this->form_validation->set_rules('txt_email','Email','trim|required|valid_email|max_length[25]');
         $this->form_validation->set_rules('txt_status','Status','trim|required');
         $this->form_validation->set_rules('txt_password','Password','trim|required');
         $this->form_validation->set_rules('txt_retype_password','Password','trim|required|matches[txt_password]');
@@ -208,23 +195,14 @@ class KelolaUser extends CI_Controller
             'nama_lengkap' => $this->input->post('txt_nama', true),
             'id_akses' => $this->input->post('txt_akses', true),
             'no_hp' => $this->input->post('txt_telp', true),
+            'email' => $this->input->post('txt_email', true),
             'jenis_kelamin' => $this->input->post('radio_jk', true),
             'username' => $this->input->post('txt_username', true),
             'status_user' => $this->input->post('txt_status', true)
         ];
         return $input;
     }
-
-    private function uploadImg()
-    {
-        $config['upload_path'] = './assets/uploads/images/profil/user/';
-        $config['allowed_types'] = 'jpg|jpeg|png';
-        $config['encrypt_name'] = true;
-        $config['max_size']  = '1024';
-        $config['max_width']  = '768';
-        $config['max_height']  = '768';
-        return $config;
-    }
+    
     private function pages($page,$data)
     {
         $this->load->view('partials/part_navbar', $data);

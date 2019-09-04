@@ -60,7 +60,7 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <form action="<?= base_url('kelolauser/changepassword/') ?>" method="post" id="modal_user">
+      <form action="<?= base_url('kelolauser/changepassword') ?>" method="post">
         <input type="hidden" name="input_hidden">
         <input type="hidden" name="<?= $this->security->get_csrf_token_name();?>"
           value="<?= $this->security->get_csrf_hash(); ?>">
@@ -70,7 +70,7 @@
               <div class="col-sm-12">
                 <div class="form-group">
                   <label for="">Masukkan Password</label>
-                  <input type="password" class="form-control" name="pw_baru" id="pw_baru">
+                  <input type="password" class="form-control" name="pw_baru" id="pw_baru" required>
                   <div class="form-check form-check-flat my-1">
                     <label class="form-check-label">
                       <input type="checkbox" class="form-check-input" name="tampil_pw1"
@@ -80,7 +80,7 @@
                 </div>
                 <div class="form-group">
                   <label for="">Confirm Password</label>
-                  <input type="password" class="form-control" name="confirm_pw_baru" id="confirm_pw_baru">
+                  <input type="password" class="form-control" name="confirm_pw_baru" id="confirm_pw_baru" required>
                   <div class="form-check form-check-flat my-1">
                     <label class="form-check-label">
                       <input type="checkbox" class="form-check-input" name="tampil_pw2"
@@ -93,7 +93,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="submit" class="btn btn-primary">Simpan</button>
+          <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i>Simpan</button>
         </div>
       </form>
     </div>

@@ -31,8 +31,8 @@
   <link rel="stylesheet" href="<?= base_url() ?>assets/custom/toastr/toastr.min.css">
   <!-- Select Css -->
   <link rel="stylesheet" href="<?= base_url() ?>assets/custom/select2/css/select2.min.css">
-  <!-- endinject -->
-  <link rel="shortcut icon" href="<?= base_url() ?>assets/images/favicon.png" />
+  <!-- Lightbox -->
+  <link rel="stylesheet" href="<?= base_url() ?>assets/custom/lightbox2-11/css/lightbox.min.css">
   <script>
   var base = '<?= base_url() ?>'
   var csrf_name = '<?= $this->security->get_csrf_token_name() ?>'
@@ -209,7 +209,7 @@
           <?php } ?>
           <li class="nav-item dropdown d-xl-inline-block">
             <a class="nav-link dropdown-toggle" id="UserDropdown" href="#" data-toggle="dropdown" aria-expanded="false">
-              <span class="profile-text">Setting User !</span>
+              <span class="profile-text"><i class="mdi mdi-settings"></i></span>
             </a>
             <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="UserDropdown">
               <div class="bg-setting padding-setting">

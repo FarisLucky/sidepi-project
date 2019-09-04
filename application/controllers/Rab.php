@@ -268,32 +268,32 @@ class Rab extends CI_Controller
 
 	private function pages($page,$data)
 	{
-        $this->load->view('partials/part_navbar',$data);
-        $this->load->view('partials/part_sidebar',$data);
+		$this->load->view('partials/part_navbar',$data);
+		$this->load->view('partials/part_sidebar',$data);
 		$this->load->view($page,$data);
-        $this->load->view('partials/part_footer',$data);
+		$this->load->view('partials/part_footer',$data);
 	}
 
 	private function validate()
 	{
-        $this->form_validation->set_rules('nama_detail', 'Nama Detail', 'trim|required|max_length[50]');
-        $this->form_validation->set_rules('volume', 'Volume', 'trim|required|numeric|max_length[3]');
-        $this->form_validation->set_rules('satuan', 'Satuan', 'trim|required|max_length[15]');
-        $this->form_validation->set_rules('harga_satuan', 'Harga Satuan', 'trim|required|max_length[9]');
-        $this->form_validation->set_rules('select_kelompok', 'Kategori Kelompok', 'trim|required');
+		$this->form_validation->set_rules('nama_detail', 'Nama Detail', 'trim|required|max_length[50]');
+		$this->form_validation->set_rules('volume', 'Volume', 'trim|required|numeric|max_length[3]');
+		$this->form_validation->set_rules('satuan', 'Satuan', 'trim|required|max_length[15]');
+		$this->form_validation->set_rules('harga_satuan', 'Harga Satuan', 'trim|required|max_length[9]');
+		$this->form_validation->set_rules('select_kelompok', 'Kategori Kelompok', 'trim|required');
 	}
 
 	private function input()
-    {
-        $data = [
-            'nama_detail'=>$this->input->post('nama_detail',true),
-            'volume'=>$this->input->post('volume',true),
-            'satuan'=>$this->input->post('satuan',true),
+	{
+		$data = [
+			'nama_detail'=>$this->input->post('nama_detail',true),
+			'volume'=>$this->input->post('volume',true),
+			'satuan'=>$this->input->post('satuan',true),
 			'harga_satuan'=>$this->input->post('harga_satuan',true),
 			'total_harga'=>(int) $this->input->post('volume',true) * $this->input->post('harga_satuan',true),
-            'id_kelompok'=>$this->input->post('select_kelompok',true)
-        ];
-        return $data;
-    }
+			'id_kelompok'=>$this->input->post('select_kelompok',true)
+		];
+		return $data;
+	}
 
 }

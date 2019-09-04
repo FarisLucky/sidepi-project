@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class CalonKonsumen extends CI_Controller
+class Calonkonsumen extends CI_Controller
 {
     function __construct()
     {
@@ -95,11 +95,11 @@ class CalonKonsumen extends CI_Controller
     private function validate()
     {
         $this->form_validation->set_rules('val_id_type', 'Type Card', 'trim|required');
-        $this->form_validation->set_rules('val_id_card', "Id card", "trim|required|numeric");
-        $this->form_validation->set_rules('val_nama_konsumen', "Nama Konsumen", "trim|required");
+        $this->form_validation->set_rules('val_id_card', "Id card", "trim|required|numeric||max_length[18]");
+        $this->form_validation->set_rules('val_nama_konsumen', "Nama Konsumen", "trim|required||max_length[25]");
         $this->form_validation->set_rules('val_alamat', "Alamat", "trim|required");
-        $this->form_validation->set_rules('val_nomor_telepon', "nomor telepon", "trim|required|numeric");
-        $this->form_validation->set_rules('val_email', "Email", "trim|valid_email");
+        $this->form_validation->set_rules('val_nomor_telepon', "nomor telepon", "trim|required|numeric|max_length[13]");
+        $this->form_validation->set_rules('val_email', "Email", "trim|valid_email|max_length[25]");
     }
     
     private function inputData()

@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class FollowCalon extends CI_Controller
+class Followcalon extends CI_Controller
 {
     function __construct()
     {
@@ -12,7 +12,7 @@ class FollowCalon extends CI_Controller
 
     public function index()
     {
-        $data['title'] = 'Follow Calon Konsumen';
+        $data['title'] = 'Follow Calon';
         $data['menus'] = $this->rolemenu->getMenus();
         $data['img'] = getCompanyLogo();
         $data['follow_calon_konsumen'] = $this->modelapp->getData('*','tbl_follow')->result_array();
@@ -22,9 +22,20 @@ class FollowCalon extends CI_Controller
     public function hapus($id)
     {
         $value = ['id_follow' => $id];
-        $this->M_follow_calon_konsumen->delete($value);
-        //$this->session->set_flashdata('success', '<div class="alert alert-success" style="margin-bottom:0px" role="alert">Data berhasil dihapus :)</div>');
-        redirect('follow_calon_konsumen');
+        $get_data = $this->modelapp->getData('id_follow','follow_up',['id_follow'=>$id]);
+        if ($get_data->num_rows() > 0) {
+            $query = $this->modelapp->deleteData($value,'follow_up');
+            if ($query) {
+                $this->session->set_flashdata('success','Data berhasil dihapus');
+                redirect('followcalon');
+            } else {
+                $this->session->set_flashdata('success','Data Gagal dihapus');
+                redirect('followcalon');
+            }
+        } else {
+            $this->session->set_flashdata('success','Data tidak ditemukan');
+            redirect('followcalon');
+        }
     }
 
     public function tambah()
@@ -63,16 +74,15 @@ class FollowCalon extends CI_Controller
             }
         }
     }
-    public function edit($id)
+    public function ubah($id)
     {
         $where = array('id_follow' => $id);
         $data['title'] = 'Edit Follow Calon Konsumen';
         $data['menus'] = $this->rolemenu->getMenus();
         $data['img'] = getCompanyLogo();
-        $data['follow_calon_konsumen'] = $this->M_follow_calon_konsumen->getSelectionData($where);
+        $data['follow_calon_konsumen'] = $this->modelapp->getData('*','follow_up',$where)->row_array();
         $data['media'] = ['Whatsapp', 'Facebook', 'Instagram'];
-        $data['konsumen'] = $this->M_follow_calon_konsumen->getData();
-        $data['hasil'] = ['Setuju', 'Tidak Setuju'];
+        $data['konsumen'] = $this->modelapp->getData('id_konsumen,nama_lengkap','konsumen',['status_konsumen'=>'ck'])->result_array();
         $this->load->view('partials/part_navbar', $data);
         $this->load->view('partials/part_sidebar', $data);
         $this->load->view('follow_calon_konsumen/v_edit_follow_calon_konsumen', $data);
@@ -81,6 +91,7 @@ class FollowCalon extends CI_Controller
 
     public function corePerbarui()
     {
+        $id = $this->input->post('input_hidden',true);
         $this->form_validation->set_rules('edit_nama_konsumen', "Nama Konsumen", "required", ['required' => 'Nama Konsumen tidak boleh kosong!!']);
 
         $this->form_validation->set_rules('edit_media', "Media", "required", ['required' => 'Media tidak boleh kosong!!']);
@@ -90,29 +101,23 @@ class FollowCalon extends CI_Controller
         $this->form_validation->set_rules('edit_hasil', "hasil", "required", ['required' => 'Hasil Tidak Boleh Kosong !!']);
 
         if ($this->form_validation->run() == false) {
-            $this->edit('');
-            return false;
+            $this->ubah($id);
         } else {
-            date_default_timezone_set('Asia/Jakarta');
-            $tgl_follow = date('Y-m-d'); //2019-05-16 11:26:56
             $post = [
                 'id_konsumen' => $this->input->post('edit_nama_konsumen', true),
-                'tgl_follow' => $tgl_follow,
                 'media' => $this->input->post('edit_media', true),
                 'keterangan' => $this->input->post('edit_keterangan', true),
-                'hasil_follow' => $this->input->post('edit_hasil', true),
-                'id_user' => $this->session->userdata('id_user'),
+                'hasil_follow' => $this->input->post('edit_hasil', true)
             ];
-            $this->M_follow_calon_konsumen->updateDatafollow($post);
-
-            redirect('followcalonkonsumen');
+            $query = $this->modelapp->updateData($post,'follow_up',['id_follow'=>$id]);
+            if ($query) {
+                $this->session->set_flashdata('success','Data berhasil diubah');
+                redirect('followcalon/ubah/'.$id);
+            } else {
+                $this->session->set_flashdata('success','Data gagal diubah');
+                redirect('followcalon/ubah/'.$id);
+            }
         }
-    }
-    public function getCalon()
-    {
-        $nama = $this->input->post("nama",true);
-        $query = $this->M_follow_calon_konsumen->getDataJoin("*","follow_up","konsumen","konsumen.id_konsumen = follow_up.id_konsumen","nama_lengkap",$nama)->result();
-        return $this->output->set_content_type('application/json')->set_output(json_encode($query));
     }
     private function pages($path,$data)
     {

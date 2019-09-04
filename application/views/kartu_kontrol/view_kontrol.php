@@ -17,7 +17,7 @@
               <div class="col-md-4">
                 <div class="form-group">
                   <label for="properti_id">Pilih Properti</label>
-                  <select name="id_properti" id="id_properti" class="form-control text-center"
+                  <select name="id_properti" id="id_properti" class="form-control text-center select-opt"
                     onchange="changeElement(this,'post','<?= base_url('kartukontrol/getunit/') ?>','<?= $this->security->get_csrf_hash() ?>','#id_unit')">
                     <option value=""> -- Properti -- </option>
                     <?php foreach ($properti as $key => $value) { ?>
@@ -29,7 +29,7 @@
               <div class="col-md-2">
                 <div class="form-group">
                   <label for="unit_id">Pilih Unit</label>
-                  <select name="id_unit" id="id_unit" class="form-control text-center">
+                  <select name="id_unit" id="id_unit" class="form-control text-center select-opt">
                     <option value=""> -- Unit -- </option>
                   </select>
                 </div>

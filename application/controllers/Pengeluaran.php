@@ -174,11 +174,11 @@ class Pengeluaran extends CI_Controller
 	private function validate()
 	{
 		$this->form_validation->set_rules('nama_pengeluaran', 'Nama', 'trim|required|min_length[5]|max_length[50]');
-		$this->form_validation->set_rules('volume', 'Jumlah', 'trim|required|numeric');
+		$this->form_validation->set_rules('volume', 'Jumlah', 'trim|required|numeric|max_length[3]');
 		$this->form_validation->set_rules('satuan', 'Satuan', 'trim|required|min_length[1]|max_length[10]');
 		$this->form_validation->set_rules('harga_satuan', 'Harga', 'trim|required|numeric');
+		$this->form_validation->set_rules('unit', 'Unit', 'trim|required');
 		$this->form_validation->set_rules('kelompok', 'Kelompok Pengeluaran', 'trim|required');
-		$this->form_validation->set_rules('kelompok', 'Kelompok Pengeluaran', 'trim');
 	}
 	private function pages($path,$data)
 	{

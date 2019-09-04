@@ -41,7 +41,7 @@ class Properti extends CI_Controller {
             $sub[] = $value->luas_tanah;
             $sub[] = $value->no_rekening;
             $sub[] = $value->bank;
-            $sub[] = '<img id="foto_properti" width="70px" src="'.base_url().'assets/uploads/images/properti/'.$value->foto_properti.'" class="" alt="">';
+            $sub[] = '<a href="'.base_url().'assets/uploads/images/properti/'.$value->foto_properti.'" data-lightbox="example'.$value->id_properti.'" data-title="'.$value->nama_properti.'"><img src="'.base_url().'assets/uploads/images/properti/'.$value->foto_properti.'"></a>';
             $sub[] = $this->status;
             $data[] = $sub;
         }
@@ -250,9 +250,9 @@ class Properti extends CI_Controller {
     private function validate()
     {
         $this->form_validation->set_rules('txt_nama','Nama','trim|required|max_length[50]');
-        $this->form_validation->set_rules('txt_jumlah','Jumlah','trim|required|numeric');
+        $this->form_validation->set_rules('txt_jumlah','Jumlah','trim|required|numeric|max_length[5]');
         $this->form_validation->set_rules('txt_satuan','Satuan','trim|required|max_length[10]');
-        $this->form_validation->set_rules('txt_luas','Luas Tanah','trim|required');
+        $this->form_validation->set_rules('txt_luas','Luas Tanah','trim|required|max_length[5]');
         $this->form_validation->set_rules('txt_rekening','Rekening','trim|required');
         $this->form_validation->set_rules('txt_status','Status','trim|required');
         $this->form_validation->set_rules('txt_alamat','Alamat','trim|required');

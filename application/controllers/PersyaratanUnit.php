@@ -2,7 +2,7 @@
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class PersyaratanUnit extends CI_Controller 
+class Persyaratanunit extends CI_Controller 
 {
 
     public function __construct()
@@ -185,52 +185,52 @@ class PersyaratanUnit extends CI_Controller
     }
 
     public function coreTambahFile()
-        {
-            $id = $this->input->post('input_hidden',true);
-            $data_unit = $this->modelapp->getData('id_unit','persyaratan_unit',['id_persyaratan'=>$id])->row_array();
-            $config['upload_path'] = './assets/uploads/files/unit/';
-            $config['allowed_types'] = 'pdf';
-            $config['encrypt_name'] = true;
-            $config['max_size']  = '1024';
-            $config['max_width']  = '1024';
-            $config['max_height']  = '768';
-            
-            $this->load->library('upload', $config);
-            
-            if ( ! $this->upload->do_upload('file_upload')){
-                $error = array('error' => $this->upload->display_errors());
-                $this->session->set_flashdata('error',$error['error']);
-            } else {
-                $this->ubah($data_unit['id_unit']);
-                $data = array('upload_data' => $this->upload->data());
-                $input = [
-                    'file'=>$data['upload_data']['file_name']
-                ];
-                $query_update = $this->modelapp->updateData($input,'persyaratan_unit',['id_persyaratan'=>$id]);
-                if ($query_update) {
-                    $this->session->set_flashdata('success','berhasil ditambahkan');
-                    redirect('persyaratanunit/detailunit/'.$data_unit['id_unit']);
-                }
+    {
+        $id = $this->input->post('input_hidden',true);
+        $data_unit = $this->modelapp->getData('id_unit','persyaratan_unit',['id_persyaratan'=>$id])->row_array();
+        $config['upload_path'] = './assets/uploads/files/unit/';
+        $config['allowed_types'] = 'pdf';
+        $config['encrypt_name'] = true;
+        $config['max_size']  = '1024';
+        $config['max_width']  = '1024';
+        $config['max_height']  = '768';
+        
+        $this->load->library('upload', $config);
+        
+        if ( ! $this->upload->do_upload('file_upload')){
+            $error = array('error' => $this->upload->display_errors());
+            $this->session->set_flashdata('error',$error['error']);
+        } else {
+            $this->ubah($data_unit['id_unit']);
+            $data = array('upload_data' => $this->upload->data());
+            $input = [
+                'file'=>$data['upload_data']['file_name']
+            ];
+            $query_update = $this->modelapp->updateData($input,'persyaratan_unit',['id_persyaratan'=>$id]);
+            if ($query_update) {
+                $this->session->set_flashdata('success','berhasil ditambahkan');
+                redirect('persyaratanunit/detailunit/'.$data_unit['id_unit']);
             }
-            
         }
+        
+    }
 
     public function hapusSyarat($id,$unit)
-        {
-            $id_persyaratan = $id;
-            $get_persyaratan = $this->modelapp->getData('id_persyaratan,id_unit,file','persyaratan_unit',['id_persyaratan'=>$id_persyaratan]);
-            if ($get_persyaratan->num_rows() > 0) {
-                $data_persyaratan = $get_persyaratan->row_array();
-                $query_delete = $this->modelapp->deleteData(['id_persyaratan'=>$data_persyaratan['id_persyaratan']],'persyaratan_unit');
-                if ($query_delete) {
-                    $this->session->set_flashdata('success','Data berhasil dihapus');
-                    redirect('persyaratanunit/detailunit/'.$data_persyaratan['id_unit']);
-                }
-                } else {
-                $this->session->set_flashdata('failed','Data tidak ditemukan');
+    {
+        $id_persyaratan = $id;
+        $get_persyaratan = $this->modelapp->getData('id_persyaratan,id_unit,file','persyaratan_unit',['id_persyaratan'=>$id_persyaratan]);
+        if ($get_persyaratan->num_rows() > 0) {
+            $data_persyaratan = $get_persyaratan->row_array();
+            $query_delete = $this->modelapp->deleteData(['id_persyaratan'=>$data_persyaratan['id_persyaratan']],'persyaratan_unit');
+            if ($query_delete) {
+                $this->session->set_flashdata('success','Data berhasil dihapus');
                 redirect('persyaratanunit/detailunit/'.$data_persyaratan['id_unit']);
             }
+            } else {
+            $this->session->set_flashdata('failed','Data tidak ditemukan');
+            redirect('persyaratanunit/detailunit/'.$data_persyaratan['id_unit']);
         }
+    }
 
     public function hapusFile($id,$unit)
     {
@@ -255,21 +255,21 @@ class PersyaratanUnit extends CI_Controller
 
     public function printDoc($id)
     {
-    $data_unit = $this->modelapp->getData('kelompok_persyaratan,file','persyaratan_unit',['id_persyaratan'=>$id])->row_array();
-    $data['link'] = base_url('assets/uploads/files/unit/'.$data_unit['file']);
-    $data['name'] = $data_unit['kelompok_persyaratan'].'.pdf'; 
-    $this->load->view('print/custom_print', $data);
+        $data_unit = $this->modelapp->getJoinData('*','persyaratan_unit',['kelompok_persyaratan'=>'persyaratan_unit.kelompok_persyaratan = kelompok_persyaratan.id_sasaran'],['id_persyaratan'=>$id])->row_array();
+        $data['link'] = base_url('assets/uploads/files/unit/'.$data_unit['file']);
+        $data['name'] = $data_unit['kelompok_persyaratan'].'.pdf'; 
+        $this->load->view('print/custom_print', $data);
     }
 
     private function validate()
     {
-        $this->form_validation->set_rules('txt_nama','Nama Unit','trim|required|max_length[15]');
-        $this->form_validation->set_rules('txt_type','Type','trim|required|max_length[15]');
-        $this->form_validation->set_rules('txt_tanah','Luas Tanah','trim|required|numeric');
-        $this->form_validation->set_rules('satuan_tanah','Satuan Tanah','trim|required|max_length[5]');
-        $this->form_validation->set_rules('txt_bangunan','Luas Bangunan','trim|required|numeric');
-        $this->form_validation->set_rules('satuan_bangunan','Satuan Bangunan','trim|required|max_length[5]');
-        $this->form_validation->set_rules('txt_harga','Harga','trim|required|numeric');
+        $this->form_validation->set_rules('txt_nama','Nama Unit','trim|required|max_length[25]');
+        $this->form_validation->set_rules('txt_type','Type','trim|required|max_length[10]');
+        $this->form_validation->set_rules('txt_tanah','Luas Tanah','trim|required|numeric|max_length[5]');
+        $this->form_validation->set_rules('satuan_tanah','Satuan Tanah','trim|required|max_length[10]');
+        $this->form_validation->set_rules('txt_bangunan','Luas Bangunan','trim|required|numeric|max_length[5]');
+        $this->form_validation->set_rules('satuan_bangunan','Satuan Bangunan','trim|required|max_length[10]');
+        $this->form_validation->set_rules('txt_harga','Harga','trim|required|numeric|max_length[10]');
         $this->form_validation->set_rules('txt_alamat','Alamat','trim|required');
         $this->form_validation->set_rules('txt_desc','Deskripsi','trim|required');
     }

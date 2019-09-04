@@ -44,11 +44,11 @@
                 <small class="text-danger"><?= form_error("txt_username") ?></small>
               </div>
             </div>
-            <div class="col-md-5">
+            <div class="col-md-12">
               <div class="form-group">
                 <label class="col-form-label">Jenis Kelamin</label>
                 <div class="row">
-                  <div class="col-sm-6">
+                  <div class="col-sm-3">
                     <div class="form-radio">
                       <label class="form-check-label">
                         <input type="radio" class="form-check-input" name="radio_jk" id="radio1" value="laki-laki"
@@ -56,7 +56,7 @@
                       </label>
                     </div>
                   </div>
-                  <div class="col-sm-6">
+                  <div class="col-sm-3">
                     <div class="form-radio">
                       <label class="form-check-label">
                         <input type="radio" class="custom-control-input" name="radio_jk" id="radio2" value="perempuan"
@@ -68,7 +68,7 @@
                 <small class="text-danger"><?= form_error("radio_jk"); ?></small>
               </div>
             </div>
-            <div class="col-sm-12">
+            <div class="col-sm-6">
               <div class="form-group">
                 <label for="txt_telp">Telp </label>
                 <input type="number" name="txt_telp" class="form-control" id="txt_telp"
@@ -79,14 +79,21 @@
             </div>
             <div class="col-sm-6">
               <div class="form-group">
+                <label>Email</label>
+                <input type="email" name="txt_email" class="form-control" value="<?= set_value("txt_email") ?>">
+                <small class="text-danger"><?= form_error("txt_email") ?></small>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group">
                 <label for="txt_akses">Akses</label>
                 <select name="txt_akses" id="txt_akses" class="form-control">
                   <option value="">-- Pilih Akses --</option>
                   <?php foreach ($akses as $key => $value) : 
-                                                $select = (set_value('txt_akses') == $value->id_akses) ? "selected" : "" ;
-                                                ?>
+                    $select = (set_value('txt_akses') == $value->id_akses) ? "selected" : "" ;
+                    if ($value->id_akses != '1') { ?>
                   <option value="<?= $value->id_akses ?>" <?= $select ?>><?= $value->akses ?></option>
-                  <?php endforeach; ?>
+                  <?php } endforeach; ?>
                 </select>
                 <small class="text-danger"><?= form_error("txt_akses") ?></small>
               </div>

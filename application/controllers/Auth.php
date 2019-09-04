@@ -30,7 +30,7 @@ class Auth extends CI_Controller {
                 'password'=>$this->input->post('auth_pass',true)    
             ];
             $user = $this->modelapp->getData("*","user",["username"=>$input["username"]]);
-            if ($user->num_rows() >0 ) {
+            if ($user->num_rows() > 0 ) {
                 $rows = $user->row();
                 if (password_verify($input['password'],$rows->password)) {
                     if ($rows->status_user === 'aktif') {

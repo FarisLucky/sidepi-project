@@ -3,21 +3,12 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Transaksi extends CI_Controller {
-
     public function __construct()
     {
         parent::__construct();
         $this->rolemenu->init();
         $this->load->library("form_validation");
     }
-    
-    public function coba()
-    {
-        $data['title'] = "datepicker";
-        $data['menus'] = $this->rolemenu->getMenus();
-        $this->load->view('view_dashboard',$data);
-    }
-    
     public function index()
     {
         $params = ['id_user'=>$this->session->userdata('id_user'),'id_properti'=>$this->session->userdata('id_properti')];
@@ -28,7 +19,6 @@ class Transaksi extends CI_Controller {
         $data['list_unlock'] = $this->modelapp->getData("id_transaksi,no_spr,nama_lengkap,nama_unit,type_bayar,total_kesepakatan,tgl_transaksi","tbl_transaksi",["kunci"=>"unlock","id_user"=>$_SESSION['id_user']])->result();
         $this->pages("transaksi/view_list_transaksi",$data);
     }
-
     public function tambah()
     {
         $data['title'] = 'Transaksi';
@@ -39,7 +29,6 @@ class Transaksi extends CI_Controller {
         $data['type'] = $this->modelapp->getData("*","type_bayar")->result_array();
         $this->pages("transaksi/view_transaksi",$data);
     }
-
     public function detail($id)
     {
         $this->load->helper('date');
@@ -78,7 +67,6 @@ class Transaksi extends CI_Controller {
         $data['uang_muka'] = $this->modelapp->getData('nama_pembayaran,total_tagihan','pembayaran',['id_transaksi'=>$id_transaksi,'jenis_pembayaran'=>2])->result_array();
         $this->pages("transaksi/view_edit",$data);
     }
-
     public function dataKonsumen()
     {
         $data = ['success'=>false];
@@ -109,7 +97,6 @@ class Transaksi extends CI_Controller {
         }
         $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
-
     public function getHarga()
     {
         $data = ['success'=>false];
@@ -135,7 +122,6 @@ class Transaksi extends CI_Controller {
         }
         return $this->output->set_output(json_encode($data));
     }
-
     // Insert Transaksi
     public function coreTambah()
     {
@@ -244,7 +230,6 @@ class Transaksi extends CI_Controller {
                 $total_transaksi = (int) ($input["total_kesepakatan"] - $input["total_tanda_jadi"]);
             }
             // !Validasi Tanda Jadi
-
             if (!empty($_POST["periode_Um"]) && !empty($_POST["txt_angsuran"])) {
                 $total_um = 0;
                 foreach ($_POST["txt_angsuran"] as $key => $value) {
@@ -331,6 +316,7 @@ class Transaksi extends CI_Controller {
                     redirect("transaksi");
                 }
             } else {
+                $status_bayar = $this->modelapp->updateData(['status'=>'b'],'pembayaran',['id_transaksi'=>$result['id_transaksi']]);
                 $status_konsumen = $this->modelapp->getData('status_konsumen','konsumen',['id_konsumen'=>$result['id_konsumen']])->row_array();
                 $status_unit = $this->modelapp->getData('status_unit','unit',['id_unit'=>$result['id_unit']])->row_array();
                 if ($status_konsumen['status_konsumen'] == 'ck' && $status_unit['status_unit'] == 'bt') {
@@ -360,9 +346,12 @@ class Transaksi extends CI_Controller {
         $get_data = $this->modelapp->getData("id_transaksi","transaksi",["id_transaksi"=>$id]);
         if ($get_data->num_rows() > 0) {
             $result = $get_data->row_array();
-            $query = $this->modelapp->deleteData(["id_transaksi"=>$result["id_transaksi"]],"pembayaran");
+            // $query = $this->modelapp->deleteData(["id_transaksi"=>$result["id_transaksi"]],"pembayaran");
+            $query = $this->modelapp->deleteData(["id_transaksi"=>$params],"transaksi");
             if ($query) {
-                $this->modelapp->deleteData(["id_transaksi"=>$params],"transaksi");
+                $this->session->set_flashdata("success","Berhasil dihapus");
+                redirect("transaksi");
+              } else {
                 $this->session->set_flashdata("success","Berhasil dihapus");
                 redirect("transaksi");
             }
@@ -450,7 +439,7 @@ class Transaksi extends CI_Controller {
             $data_angsuran['total_bayar'] = 0;
             $data_angsuran['jatuh_tempo'] = $date->format("Y-m-d");
             $data_angsuran['hutang'] = $value;
-            $data_angsuran['status'] = 'b';
+            $data_angsuran['status'] = 's';
             $data_angsuran['jenis_pembayaran'] = 2;
             $this->modelapp->insertdata($data_angsuran,"pembayaran");
             $no++;
@@ -466,7 +455,7 @@ class Transaksi extends CI_Controller {
         $data_tj['total_bayar'] = 0;
         $data_tj['jatuh_tempo'] = $input["tgl_tanda_jadi"];
         $data_tj['hutang'] = $input["total_tanda_jadi"];
-        $data_tj['status'] = 'b';
+        $data_tj['status'] = 's';
         $data_tj['jenis_pembayaran'] = 1;
         $this->modelapp->insertData($data_tj,"pembayaran");
     }
@@ -486,7 +475,7 @@ class Transaksi extends CI_Controller {
                 $data['total_bayar'] = 0;
                 $data['jatuh_tempo'] = $date->format("Y-m-d");
                 $data['hutang'] = $input["total_cicilan"];
-                $data['status'] = 'b';
+                $data['status'] = 's';
                 $data['jenis_pembayaran'] = 3;
                 $this->modelapp->insertData($data,"pembayaran");
                 $no++;
@@ -501,12 +490,11 @@ class Transaksi extends CI_Controller {
                 $data['total_bayar'] = 0;
                 $data['jatuh_tempo'] = $input["tgl_cicilan"];
                 $data['hutang'] = $input["total_cicilan"];
-                $data['status'] = 'b';
+                $data['status'] = 's';
                 $data['jenis_pembayaran'] = 3;
                 $this->modelapp->insertData($data,"pembayaran");
             }
         }
     }
 }
-
 /* End of file Controllername.php */
