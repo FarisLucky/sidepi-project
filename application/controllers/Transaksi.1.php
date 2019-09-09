@@ -172,52 +172,41 @@ class Transaksi extends CI_Controller {
                 }
             }
             // !Validasi Cicilan
-
-            $this->db->trans_start(); //Start Transaction Database auth concept
             
             $query = $this->modelapp->insertData($input,"transaksi");
             $get_id_insert = $this->db->insert_id();
-            $detail = [$this->input->post('txt_nama_tambah',true),$this->input->post('txt_volume_tambah',true),$this->input->post('txt_satuan_tambah',true),$this->input->post('txt_harga_tambah',true)];
-            $data['detail'] = $this->reArray($detail);
-            // Detail Transaksi
-            if (!empty($data['detail'])) {
-                $detail_transaksi = [];
-                foreach ($data['detail'] as $key => $value) {
-                    if (!empty($key)) {
-                        $detail_transaksi['penambahan'] = $value[0]; 
-                        $detail_transaksi['volume'] = $value[1]; 
-                        $detail_transaksi['satuan'] = $value[2]; 
-                        $detail_transaksi['total'] = $value[3]; 
-                        $detail_transaksi['transaksi'] = $id_insert; 
-                        $this->modelapp->insertData($detail_transaksi,"detail_transaksi");
+            if ($query) {
+                $detail = [$this->input->post('txt_nama_tambah',true),$this->input->post('txt_volume_tambah',true),$this->input->post('txt_satuan_tambah',true),$this->input->post('txt_harga_tambah',true)];
+                $data['detail'] = $this->reArray($detail);
+                // Detail Transaksi
+                if (!empty($data['detail'])) {
+                    $detail_transaksi = [];
+                    foreach ($data['detail'] as $key => $value) {
+                        if (!empty($key)) {
+                            $detail_transaksi['penambahan'] = $value[0]; 
+                            $detail_transaksi['volume'] = $value[1]; 
+                            $detail_transaksi['satuan'] = $value[2]; 
+                            $detail_transaksi['total'] = $value[3]; 
+                            $detail_transaksi['transaksi'] = $id_insert; 
+                            $this->modelapp->insertData($detail_transaksi,"detail_transaksi");
+                        }
                     }
                 }
-            }
-
-            // Uang Tanda Jadi 
-            if (!empty($input["total_tanda_jadi"])) {
-                $this->tambahTandaJadi($get_id_insert,$input);
-            }
-            // Uang Muka Angsuran 
-            if (!empty($input["periode_uang_muka"])) {
-                $angsuran = $this->input->post('txt_angsuran',true);
-                $this->tambahAngsuran($get_id_insert,$angsuran);
-            }
-            //  Periode pembayaran
-            if (!empty($input["type_bayar"])) {
-                $this->tambahCicilan($get_id_insert,$input,$count);
-            }
-
-            $this->db->trans_complete(); // End of Transaction Database Auth concept
-
-            if ($this->db->trans_status() === FALSE) {
-                $this->session->set_flashdata("failed","Gagal ditambahkan");
-                redirect("transaksi/tambah");
-                
-            } else {
+                // Uang Tanda Jadi 
+                if (!empty($input["total_tanda_jadi"])) {
+                    $this->tambahTandaJadi($get_id_insert,$input);
+                }
+                // Uang Muka Angsuran 
+                if (!empty($input["periode_uang_muka"])) {
+                    $angsuran = $this->input->post('txt_angsuran',true);
+                    $this->tambahAngsuran($get_id_insert,$angsuran);
+                }
+                //  Periode pembayaran
+                if (!empty($input["type_bayar"])) {
+                    $this->tambahCicilan($get_id_insert,$input,$count);
+                }
                 $this->session->set_flashdata("success","Berhasil ditambahkan");
                 redirect("transaksi/tambah");
-
             }
         }
     }
@@ -228,36 +217,30 @@ class Transaksi extends CI_Controller {
         $get_id_insert = $this->input->post('hidden',true);
         $this->validate();
         if ($this->form_validation->run() ==  false) {
+            // var_dump(form_error())
             $this->edit($get_id_insert);
-
         }else{
             $input = $this->inputData();
             $total_transaksi = 0;
-
             if ($_POST["radio_tj"] == "tidak_masuk") {
                 $input += ["tanda_jadi"=>$this->input->post("radio_tj",true)];
                 $total_transaksi = $input["total_kesepakatan"];
-                
             } else {
                 $input += ["tanda_jadi"=>$this->input->post("radio_tj",true)];
                 $total_transaksi = (int) ($input["total_kesepakatan"] - $input["total_tanda_jadi"]);
-
             }
             // !Validasi Tanda Jadi
             if (!empty($_POST["periode_Um"]) && !empty($_POST["txt_angsuran"])) {
                 $total_um = 0;
                 foreach ($_POST["txt_angsuran"] as $key => $value) {
                     $total_um += $value ;
-
                 }
                 $total_transaksi -= $total_um;
                 $input += ["periode_uang_muka"=>$this->input->post("periode_Um",true)];
                 $input += ["total_uang_muka"=>$total_um];
-                
-            } else {
+            }else{
                 $input += ["periode_uang_muka"=>$this->input->post("periode_Um",true)];
                 $input += ["total_uang_muka"=>0];
-
             }
             // !validasi Uang Muka
             
@@ -266,71 +249,57 @@ class Transaksi extends CI_Controller {
                     $count = 1;
                     $input += ["periode_cicilan"=>1];
                     $input += ["total_cicilan"=>$total_transaksi];
-                    
                 } elseif ($_POST["txt_type_pembayaran"] == "3") {
                     $count = 1;
                     $input += ["periode_cicilan"=>$this->input->post('periode_bayar',true)];
                     $input += ["total_cicilan"=>$total_transaksi];
-
-                } else {
+                }
+                else {
                     $count = $this->input->post("periode_bayar",true);
                     $total_transaksi = $total_transaksi / $_POST["periode_bayar"];
                     $input += ["periode_cicilan"=>$this->input->post("periode_bayar",true)];
                     $input += ["total_cicilan"=>$total_transaksi];
-
                 }
             }
             // !Validasi Cicilan
             
-            $this->db->trans_start(); //Start Transaction Database Auth Concept
-
             $query = $this->modelapp->updateData($input,"transaksi",["id_transaksi"=>$get_id_insert]);
-            
-            $detail = [$this->input->post('txt_nama_tambah',true),$this->input->post('txt_volume_tambah',true),$this->input->post('txt_satuan_tambah',true),$this->input->post('txt_harga_tambah',true)];
-            $detail_array['detail'] = $this->reArray($detail);
-            $this->modelapp->deleteData(['id_transaksi'=>$get_id_insert],'detail_transaksi');
-            $this->modelapp->deleteData(['id_transaksi'=>$get_id_insert],'pembayaran');
-            // Detail Transaksi
-            if (!empty($data['detail'])) {
-                $data = [];
-                foreach ($detail_array['detail'] as $key => $value) {
-                    if (!empty($key)) {
-                        $data['penambahan'] = $value[0]; 
-                        $data['volume'] = $value[1]; 
-                        $data['satuan'] = $value[2]; 
-                        $data['total'] = $value[3]; 
-                        $this->modelapp->insertData($detail_transaksi,"detail_transaksi");
-
+            if ($query) {
+                $detail = [$this->input->post('txt_nama_tambah',true),$this->input->post('txt_volume_tambah',true),$this->input->post('txt_satuan_tambah',true),$this->input->post('txt_harga_tambah',true)];
+                $detail_array['detail'] = $this->reArray($detail);
+                $this->modelapp->deleteData(['id_transaksi'=>$get_id_insert],'detail_transaksi');
+                $this->modelapp->deleteData(['id_transaksi'=>$get_id_insert],'pembayaran');
+                // Detail Transaksi
+                if (!empty($data['detail'])) {
+                    $data = [];
+                    foreach ($detail_array['detail'] as $key => $value) {
+                        if (!empty($key)) {
+                            $data['penambahan'] = $value[0]; 
+                            $data['volume'] = $value[1]; 
+                            $data['satuan'] = $value[2]; 
+                            $data['total'] = $value[3]; 
+                            $this->modelapp->insertData($detail_transaksi,"detail_transaksi");
+                        }
                     }
                 }
-            }
-            // Uang Tanda Jadi 
-            if (!empty($input["total_tanda_jadi"])) {
-                $this->tambahTandaJadi($get_id_insert,$input);
-                
-            }
-            // Uang Muka Angsuran 
-            if (!empty($input["periode_uang_muka"])) {
-                $angsuran = $this->input->post('txt_angsuran',true);
-                $this->tambahAngsuran($get_id_insert,$angsuran);
-
-            }
-            //  Periode pembayaran
-            if (!empty($input["type_bayar"])) {
-                $this->tambahCicilan($get_id_insert,$input,$count);
-
-            }
-
-            $this->db->trans_complete(); // End Transaction Database Auth Concept
-
-            if ($this->db->trans_status() === FALSE) {
-                $this->session->set_flashdata("failed","Gagal diubah");
-                redirect("transaksi/edit/".$get_id_insert);
-
-            } else {
+                // Uang Tanda Jadi 
+                if (!empty($input["total_tanda_jadi"])) {
+                    $this->tambahTandaJadi($get_id_insert,$input);
+                }
+                // Uang Muka Angsuran 
+                if (!empty($input["periode_uang_muka"])) {
+                    $angsuran = $this->input->post('txt_angsuran',true);
+                    $this->tambahAngsuran($get_id_insert,$angsuran);
+                }
+                //  Periode pembayaran
+                if (!empty($input["type_bayar"])) {
+                    $this->tambahCicilan($get_id_insert,$input,$count);
+                }
                 $this->session->set_flashdata("success","Berhasil diubah");
                 redirect("transaksi/edit/".$get_id_insert);
-
+            }else{
+                $this->session->set_flashdata("failed","Tidak ada perubahan");
+                $this->edit($get_id_insert);
             }
         }
     }
@@ -338,52 +307,35 @@ class Transaksi extends CI_Controller {
     {
         $id = $params;
         $get_data = $this->modelapp->getData("id_transaksi,id_konsumen,id_unit,status_transaksi","transaksi",["id_transaksi"=>$id]);
-
         if ($get_data->num_rows() > 0) {
             $result = $get_data->row_array();
-
             if ($result['status_transaksi'] == 'p') {
                 $query = $this->modelapp->updateData(['kunci'=>'l'],'transaksi',['id_transaksi'=>$result['id_transaksi']]); 
                 if ($query) {
                     $this->session->set_flashdata("success","Berhasil dilock");
                     redirect("transaksi");
-
-                } else {
-                    $this->session->set_flashdata("failed","Berhasil dilock");
-                    redirect("transaksi");
-
                 }
-
             } else {
-
-                $this->db->trans_start(); // Start Transaction Database Auth Concept
-
                 $status_bayar = $this->modelapp->updateData(['status'=>'b'],'pembayaran',['id_transaksi'=>$result['id_transaksi']]);
                 $status_konsumen = $this->modelapp->getData('status_konsumen','konsumen',['id_konsumen'=>$result['id_konsumen']])->row_array();
                 $status_unit = $this->modelapp->getData('status_unit','unit',['id_unit'=>$result['id_unit']])->row_array();
-
                 if ($status_konsumen['status_konsumen'] == 'ck' && $status_unit['status_unit'] == 'bt') {
                     if ($result["status_transaksi"] == "s") {
                         $this->modelapp->updateData(['status_konsumen'=>'k'],'konsumen',['id_konsumen'=>$result['id_konsumen']]);
                         $this->modelapp->updateData(['status_unit'=>'b'],'unit',['id_unit'=>$result['id_unit']]);
-                        $query = $this->modelapp->updateData(['status_transaksi'=>'p','kunci'=>'l'],'transaksi',['id_transaksi'=>$result['id_transaksi']]);
-                        
+                        $query = $this->modelapp->updateData(['status_transaksi'=>'p','kunci'=>'l'],'transaksi',['id_transaksi'=>$result['id_transaksi']]);       
+                        $this->session->set_flashdata("success","Berhasil dilock");
+                        redirect("transaksi");
                     }
-
                 } else {
-                    $this->session->set_flashdata("failed","Konsumen Atau Unit tidak tersedia");
+                    $this->session->set_flashdata('failed','Calon atau Unit sudah tidak tersedia');
                     redirect("transaksi");
-                    
                 }
-
-                $this->db->trans_complete(); // End Transaction Database Auth Concept
-
+               
             }
-
         } else {
             $this->session->set_flashdata("failed","Data tidak ditemukan");
             redirect("transaksi");
-
         }
     }
     
@@ -392,25 +344,20 @@ class Transaksi extends CI_Controller {
     {
         $id = $params;
         $get_data = $this->modelapp->getData("id_transaksi","transaksi",["id_transaksi"=>$id]);
-
         if ($get_data->num_rows() > 0) {
             $result = $get_data->row_array();
             // $query = $this->modelapp->deleteData(["id_transaksi"=>$result["id_transaksi"]],"pembayaran");
             $query = $this->modelapp->deleteData(["id_transaksi"=>$params],"transaksi");
-
             if ($query) {
                 $this->session->set_flashdata("success","Berhasil dihapus");
                 redirect("transaksi");
-
-            } else {
+              } else {
                 $this->session->set_flashdata("success","Berhasil dihapus");
                 redirect("transaksi");
-
             }
         } else {
             $this->session->set_flashdata("failed","Data tidak ditemukan");
             redirect("transaksi");
-
         }
         
     }
@@ -533,7 +480,8 @@ class Transaksi extends CI_Controller {
                 $this->modelapp->insertData($data,"pembayaran");
                 $no++;
             }
-        } else {
+        }
+        else{
             $periode = 1;
             for($i = 1; $i <= $periode; $i++) {
                 $data['id_transaksi'] = $id_transaksi;

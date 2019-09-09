@@ -1,17 +1,13 @@
 <div class="content-wrapper" id="tambah_property">
   <div class="container">
-    <div class="row">
-      <div class="col-sm-12">
-        <div class="card">
-          <div class="card-body p-4">
-            <div class="row">
-              <div class="col-sm-12">
-                <h4 class="dark txt_title d-inline-block">Transaksi SPR</h4>
-                <img id="logo_perusahaan" width="50px"
-                  src="<?= base_url().'assets/uploads/images/properti/'.$img->logo_perusahaan ?>" class="float-right"
-                  alt="">
-              </div>
-            </div>
+    <div class="card">
+      <div class="card-body p-4">
+        <div class="row">
+          <div class="col-sm-12">
+            <h4 class="dark txt_title d-inline-block">Transaksi SPR</h4>
+            <img id="logo_perusahaan" width="50px"
+              src="<?= base_url().'assets/uploads/images/properti/'.$img->logo_perusahaan ?>" class="float-right"
+              alt="">
           </div>
         </div>
       </div>
@@ -330,7 +326,7 @@
                     <select name="periode_Um" id="periode_Um" class="form-control form-control-sm">
                       <option value="">Pilih Periode</option>
                       <?php $p = 36; for ($i=1; $i < $p ; $i++) { ?>
-                      <option value="<?= $i ?>" <?= $i == $transaksi->id_type ? 'selected' : ''; ?>><?= $i ?></option>
+                      <option value="<?= $i ?>" <?= $i == $transaksi->periode_uang_muka ? 'selected' : ''; ?>><?= $i ?></option>
                       <?php } ?>
                     </select>
                   </div>

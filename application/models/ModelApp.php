@@ -51,6 +51,12 @@ class ModelApp extends CI_Model {
         return $this->db->affected_rows();
     }
 
+    public function insertTransaksi($sql,$data)
+    {
+        $query = $this->db->query($sql,$data);
+        return $query;
+    }
+
 }
 
 /* End of file ModelApp.php */
