@@ -55,7 +55,7 @@ class Konsumen extends CI_Controller
         $data['title'] = 'Ubah Data';
         $data['menus'] = $this->rolemenu->getMenus();
         $data['doc_konsumen'] = $this->modelapp->getJoinData("*","persyaratan_konsumen",['kelompok_persyaratan'=>'kelompok_persyaratan.id_sasaran = persyaratan_konsumen.kelompok_persyaratan'],['id_konsumen'=>$id])->result_array();
-        $data['kelompok'] = $this->modelapp->getData("*","kelompok_persyaratan",['kategori_persyaratan'=>'konsumen'])->result_array();
+        $data['kelompok'] = $this->modelapp->getData("*","kelompok_persyaratan",['kategori_persyaratan'=>'konsumen','status'=>'1'])->result_array();
         $data['konsumen'] = $this->modelapp->getData("*","konsumen",['id_konsumen'=>$id])->row_array();
         $data['trans'] = $this->modelapp->getData("*","tbl_transaksi",['id_konsumen'=>$id,'status_transaksi !='=>'s'])->row_array();
         $this->pages('konsumen/view_edit', $data);

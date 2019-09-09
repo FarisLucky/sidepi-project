@@ -71,7 +71,7 @@ class Persyaratanunit extends CI_Controller
         $data['img'] = getCompanyLogo();
         $data['unit'] = $this->modelapp->getData("*","unit",["id_unit"=>$id])->row();
         $data['doc_unit'] = $this->modelapp->getJoinData("*","persyaratan_unit",['kelompok_persyaratan'=>'kelompok_persyaratan.id_sasaran = persyaratan_unit.kelompok_persyaratan'],['id_unit'=>$id])->result_array();
-        $data['kelompok'] = $this->modelapp->getData("*","kelompok_persyaratan",['kategori_persyaratan'=>'unit'])->result_array();
+        $data['kelompok'] = $this->modelapp->getData("*","kelompok_persyaratan",['kategori_persyaratan'=>'unit','status'=>'1'])->result_array();
         $this->pages("persyaratan/view_ubah_unit",$data); 
     }
 

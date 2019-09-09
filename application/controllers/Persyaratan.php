@@ -35,11 +35,15 @@ class Persyaratan extends CI_Controller {
             $input = [
                 "nama_kelompok"=>$this->input->post("nama",true),
                 "kategori_persyaratan"=>$this->input->post("type",true),
+                "status"=>'1',
                 "keterangan"=>$this->input->post("ket",true)
             ];
             $query = $this->modelapp->insertData($input,'kelompok_persyaratan');
             if ($query) {
                 $this->session->set_flashdata('success', 'Data Berhasil ditambahkan');
+                redirect('persyaratan');
+            } else {
+                $this->session->set_flashdata('failed', 'Data Gagal ditambahkan');
                 redirect('persyaratan');
             }
         }
@@ -75,23 +79,26 @@ class Persyaratan extends CI_Controller {
         }
         
     }
-    public function hapus($id)
+    public function lock($id)
     {
         $status;
         $input = $id;
-        $get_data = $this->modelapp->getData('id_sasaran,status','kelompok_persyaratan');
+        $get_data = $this->modelapp->getData('id_sasaran,status','kelompok_persyaratan',['id_sasaran'=>$input]);
         if ($get_data->num_rows() > 0) {
             $rs_sasaran = $get_data->row();
-            if ($rs_sasaran->status == 'a') {
-                $status = 't';
+            if ($rs_sasaran->status == '1') {
+                $status = '0';
             } else {
-                $status = 'a';
+                $status = '1';
             }
-            $query = $this->modelapp->deleteData('kelompok_persyaratan',['id_sasaran'=>$rs_sasaran->id_sasaran]);
+            $query = $this->modelapp->updateData(['status'=>$status],'kelompok_persyaratan',['id_sasaran'=>$rs_sasaran->id_sasaran]);
             if ($query) {
-                $this->session->set_flashdata('success','Data berhasil diUbah');
+                $this->session->set_flashdata('success','Data berhasil diubah');
                 redirect('persyaratan');
-            }
+            } else {
+                $this->session->set_flashdata('failed','Data gagal diubah');
+                redirect('persyaratan');
+	        }
         } else {
             $this->session->set_flashdata('failed','Data tidak ditemukan');
             redirect('persyaratan');
