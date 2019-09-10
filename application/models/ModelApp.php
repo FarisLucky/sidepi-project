@@ -51,10 +51,28 @@ class ModelApp extends CI_Model {
         return $this->db->affected_rows();
     }
 
-    public function insertTransaksi($sql,$data)
+    public function start_poll()
     {
-        $query = $this->db->query($sql,$data);
-        return $query;
+        $time = $this->input->post('time',true);
+        if (!is_numeric($time)) {
+            return [];
+        
+        }
+        $time = getdate($time);
+        $time = $time['year'].'-'.$time['mon'].'-'.$time['mday'];
+        while (true) {
+            $this->db->select('*');
+            $this->db->from('pengeluaran');
+            $query = $this->db->get();
+            if ($query->num_rows() > 0) {
+                $msgs = [];
+                foreach ($query->result_array() as $key => $value) {
+                    $msgs[] = $value['nama_pengeluaran'];
+                }
+                return $msgs;
+            }
+            sleep(1);
+        }
     }
 
 }

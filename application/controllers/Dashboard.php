@@ -120,6 +120,21 @@ class Dashboard extends CI_Controller {
         }
     }
 
+    // Polling Request
+    public function get_new_msgs() {
+
+        $data = $this->modelapp->getData('*','pengeluaran')->row_array();
+        echo json_encode( array(
+            'msgs' => $data,
+            // response again the server time to update the "js time variable"
+            'time' => time() 
+        ) );
+    }
+    public function get_time()
+    {
+        echo time();
+    }
+
 }
 
 /* End of file Controllername.php */

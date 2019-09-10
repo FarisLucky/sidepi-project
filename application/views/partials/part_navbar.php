@@ -37,6 +37,8 @@
   var base = '<?= base_url() ?>'
   var csrf_name = '<?= $this->security->get_csrf_token_name() ?>'
   var csrf_val = '<?= $this->security->get_csrf_hash() ?>'
+  var time;
+  
   </script>
 </head>
 
@@ -86,7 +88,6 @@
                     <span class="float-right font-weight-light small-text">1 Minutes ago</span>
                   </h6>
                   <p class="font-weight-light small-text">
-                    The meeting is cancelled
                   </p>
                 </div>
               </a>

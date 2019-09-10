@@ -74,3 +74,8 @@ function getDataWhere($select,$tbl,$where,$order = null,$order_by = null) {
     return $query;
 
 }
+
+function get_time()
+{
+    return time();
+}

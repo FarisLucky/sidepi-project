@@ -47,6 +47,43 @@ $(document).ready(function() {
   $('.datepicker').datepicker({
     format: 'mm/dd/yyyy',
   });
+  $.ajax( {
+      url: base + 'dashboard/get_time',
+      success: function( dataResponse ) {
+          time = dataResponse;
+      },
+      type: 'GET'
+  } );
+
+  function getNewMsgs() {
+    $.ajax( {
+        url: base + 'dashboard/get_new_msgs',
+        type: 'POST',
+        // send the time
+        data: { time: time,id_tkn: csrf_val },
+        success: function( dataResponse ) {
+            try {
+              dataRs = JSON.parse( dataResponse );
+              // update the time
+              time = dataRs.time;
+              // show the new messages
+              console.log(dataResponse);
+              dataResponse.msgs.forEach( function( msg ) {
+                  console.log( msg );
+              } );
+              // repeat
+              setTimeout( function() {
+                  getNewMsgs();
+              }, 1000 );
+            } catch( e ) {
+                // may fail is the connection is lost/timeout for example, so dataResponse
+                // is not a valid json string, in this situation you can start this process again
+            }
+        }
+    } );
+  }
+
+  getNewMsgs();
 });
 </script>
 <!-- End custom js for this page-->
